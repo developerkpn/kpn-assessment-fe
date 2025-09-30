@@ -83,6 +83,9 @@ const VideoPreview = ({
   const handleSavePhoto = useCallback(async () => {
     if (photoFile) {
       await onCapture(photoFile);
+      stream?.getTracks().forEach(track => {
+        track.stop();
+      });
     }
   }, [photoFile, onCapture]);
 

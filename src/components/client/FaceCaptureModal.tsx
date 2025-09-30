@@ -52,7 +52,7 @@ export default function FaceCaptureModal({ open, onPhotoCapture, userId }: FaceC
         </Typography>
         <Typography variant="body2" color="text.secondary">
           Take a clear photo of your face, then review and save it. This photo will be used as your
-          profile picture.
+          profile picture. Photo can only be taken once
         </Typography>
       </DialogTitle>
 
@@ -61,10 +61,14 @@ export default function FaceCaptureModal({ open, onPhotoCapture, userId }: FaceC
       >
         <ReactMediaRecorder
           video
-          render={({ startRecording, stopRecording, previewStream }) => {
+          render={({ startRecording, stopRecording, previewStream, muteAudio }) => {
             useEffect(() => {
+              muteAudio();
               startRecording();
-              stopRecordingRef.current = stopRecording;
+
+              return () => {
+                stopRecording();
+              };
             }, []);
 
             return (
