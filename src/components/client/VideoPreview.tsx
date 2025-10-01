@@ -118,7 +118,7 @@ const VideoPreview = ({
           borderRadius: 2,
           overflow: "hidden",
           width: "100%",
-          maxWidth: 480,
+          maxWidth: 380,
           aspectRatio: "4/3",
         }}
       >

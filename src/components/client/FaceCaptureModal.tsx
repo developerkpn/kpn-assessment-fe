@@ -1,5 +1,5 @@
 import { snack } from "@/providers/SnackbarProvider";
-import { Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
+import { Alert, Dialog, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { useCallback, useState, useEffect, useRef } from "react";
 import { ReactMediaRecorder } from "react-media-recorder";
 import VideoPreview from "./VideoPreview";
@@ -47,13 +47,17 @@ export default function FaceCaptureModal({ open, onPhotoCapture, userId }: FaceC
       }}
     >
       <DialogTitle sx={{ textAlign: "center", pb: 1 }}>
-        <Typography variant="h5" component="div" gutterBottom>
+        <Typography variant="h6" component="div" gutterBottom>
           Capture Your Photo
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Take a clear photo of your face, then review and save it. This photo will be used as your
-          profile picture. Photo can only be taken once
-        </Typography>
+        <Alert severity="warning">
+          <Typography variant="body2" color="text.secondary">
+            Take a clear photo of your face, then review and save it.{" "}
+            <strong>
+              This photo will be used as your report profile picture. Photo can only be taken once
+            </strong>
+          </Typography>
+        </Alert>
       </DialogTitle>
 
       <DialogContent
@@ -61,6 +65,7 @@ export default function FaceCaptureModal({ open, onPhotoCapture, userId }: FaceC
       >
         <ReactMediaRecorder
           video
+          audio={false}
           render={({ startRecording, stopRecording, previewStream, muteAudio }) => {
             useEffect(() => {
               muteAudio();
