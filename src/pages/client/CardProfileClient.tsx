@@ -10,9 +10,10 @@ import { ResponseDataEmpExt } from "@/types/AssessmentTypes";
 import { Avatar, Box, Button, Card, MenuItem, Skeleton } from "@mui/material";
 import { AxiosResponse, isAxiosError } from "axios";
 import dayjs, { Dayjs } from "dayjs";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import SettingsToolbar, { SettingsToolbarRef } from "./SettingsToolbar";
+import FaceCaptureModal from "@/components/client/FaceCaptureModal";
 
 const Gender = [
   { value: "M", label: "Male" },
@@ -26,6 +27,9 @@ export default function CardProfileClient() {
   const id = darwin_sess?.employee_id;
   const data_ext = useAuthExternStore(state => state.ext_sess);
   const setExternStore = useAuthExternStore(state => state.setExternStore);
+  const [profilePhotoUrl, setProfilePhotoUrl] = useState<string | null>(null);
+  const [showFaceCaptureModal, setShowFaceCaptureModal] = useState(false);
+  const [isCheckingPhoto, setIsCheckingPhoto] = useState(true);
   const {
     control,
     reset,
@@ -49,6 +53,61 @@ export default function CardProfileClient() {
   const settingsRef = useRef<SettingsToolbarRef | null>(null);
   const [edit_mode, setEditMode] = useState(false);
   const data_emp = useAuthDarwinStore(state => state.darwin_sess);
+
+  const userId = useMemo(() => {
+    if (data_emp && data_emp.employee_id) {
+      return data_emp.employee_id;
+    } else if (data_ext && data_ext.id) {
+      return data_ext.id;
+    }
+    return "";
+  }, [data_emp, data_ext]);
+
+  const checkAndLoadProfilePhoto = async () => {
+    if (!userId) return;
+
+    try {
+      // Try to access the photo - if it exists, set the URL
+      await api.get(`/assessee/profile-photo/${userId}`);
+      const photoUrl = `${api.defaults.baseURL}/assessee/profile-photo/${userId}`;
+      setProfilePhotoUrl(photoUrl);
+    } catch (error: any) {
+      if (error.response?.status === 404) {
+        // Photo doesn't exist, show capture modal
+        setShowFaceCaptureModal(true);
+        setProfilePhotoUrl(null);
+      } else {
+        console.error("Error loading profile photo:", error);
+        setProfilePhotoUrl(null);
+      }
+    } finally {
+      setIsCheckingPhoto(false);
+    }
+  };
+
+  const handlePhotoCapture = async (photoFile: File) => {
+    try {
+      const formData = new FormData();
+      formData.append("profile_photo", photoFile);
+      formData.append("user_id", userId);
+
+      await api.post("/assessee/upload-profile-photo", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      snack.success("Profile photo captured successfully!");
+      setShowFaceCaptureModal(false);
+
+      const photoUrl = `${api.defaults.baseURL}/assessee/profile-photo/${userId}`;
+      setProfilePhotoUrl(photoUrl);
+    } catch (error) {
+      console.error("Error uploading profile photo:", error);
+      snack.error("Failed to upload profile photo. Please try again.");
+      throw error;
+    }
+  };
   useEffect(() => {
     console.log("data_emp", data_emp);
     console.log("data_ext", data_ext);
@@ -75,6 +134,12 @@ export default function CardProfileClient() {
       });
     }
   }, [data_emp, data_ext]);
+
+  useEffect(() => {
+    if (userId && isCheckingPhoto) {
+      checkAndLoadProfilePhoto();
+    }
+  }, [userId, isCheckingPhoto]);
 
   const onSubmit = async (values: {
     date_of_birth_1: Dayjs | null;
@@ -157,6 +222,7 @@ export default function CardProfileClient() {
           </Box>
         )}
         <Avatar
+          src={profilePhotoUrl || undefined}
           sx={theme => ({
             [theme.breakpoints.down("sm")]: {
               width: 50,
@@ -165,7 +231,8 @@ export default function CardProfileClient() {
             width: 100,
             height: 100,
           })}
-        />
+        >
+        </Avatar>
         {data_emp && !data_ext && (
           <>
             {data_emp ? (
@@ -293,6 +360,12 @@ export default function CardProfileClient() {
           )}
         </Box>
       </Box>
+
+      <FaceCaptureModal
+        open={showFaceCaptureModal}
+        onPhotoCapture={handlePhotoCapture}
+        userId={userId}
+      />
     </Card>
   );
 }
