@@ -268,6 +268,7 @@ export default function ProctoringProvider({
     <VideoProctoringContext.Provider value={{ status_active: true, image_captured: imageSrc }}>
       <ReactMediaRecorder
         video
+        audio={false}
         render={({ startRecording, previewStream }) => {
           useEffect(() => {
             if (!webcam_stream) startRecording();
