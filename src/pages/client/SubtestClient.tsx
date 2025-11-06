@@ -4,6 +4,7 @@ import useDialog from "@/hooks/useDialog";
 import useFetch from "@/hooks/useFetch";
 import useLanguageStore from "@/hooks/useLanguageStore";
 import { API } from "@/utils/api";
+import { useTranslation } from "react-i18next";
 import {
   Assignment as AssignmentIcon,
   CheckCircle as CheckCircleIcon,
@@ -41,7 +42,11 @@ import {
   AlertTitle,
 } from "@mui/material";
 import dayjs from "dayjs";
-import React, { useEffect, useState } from "react";
+import "dayjs/locale/id";
+import "dayjs/locale/zh";
+import "dayjs/locale/ko";
+import "dayjs/locale/en";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import parse from "html-react-parser";
 
@@ -67,6 +72,7 @@ interface BatchData {
 }
 
 const SubtestClient: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const { id, token } = useParams<{ id: string; token: string }>();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -119,9 +125,14 @@ const SubtestClient: React.FC = () => {
     }
   }, [Subtest]);
 
-  const formatDate = (dateString: string) => {
-    return dayjs(dateString).format("DD/MM/YYYY | HH:mm");
-  };
+  const formatDate = useCallback(
+    (dateString: string) => {
+      if (!dateString) return "N/A";
+      return dayjs(dateString).locale(i18n.language).format("D MMMM YYYY | HH:mm");
+      // return dayjs(dateString).locale(i18n.language).format("DD/MM/YYYY | HH:mm");
+    },
+  [i18n.language]
+  );
 
   const handleOpenDialog = (id: string, subtest_name: string, status: string) => {
     setSelectedCard({ id, subtest_name, status });
@@ -310,7 +321,7 @@ const SubtestClient: React.FC = () => {
                     letterSpacing: "-0.3px",
                   }}
                 >
-                  KPN Online Assessment Platform
+                  {t('main_assessment_title')}
                 </Typography>
                 <Typography
                   variant="body1"
@@ -336,7 +347,7 @@ const SubtestClient: React.FC = () => {
                 <Stack direction="row" alignItems="center" justifyContent="center" spacing={1}>
                   <ScheduleIcon fontSize="small" sx={{ color: "#6c757d" }} />
                   <Typography variant="body2" fontWeight={500} sx={{ fontSize: "0.95rem" }}>
-                    Assessment Schedule:{" "}
+                    {t('assess_sched_title')}:{" "}
                     {Batch?.data?.start_period && formatDate(Batch.data.start_period)} -{" "}
                     {Batch?.data?.end_period && formatDate(Batch.data.end_period)}
                   </Typography>
@@ -367,10 +378,10 @@ const SubtestClient: React.FC = () => {
                       color="#343a40"
                       sx={{ fontSize: "1.1rem" }}
                     >
-                      Overall Progress
+                      {t('overall_title')}
                     </Typography>
                     <Typography variant="body2" color="#6c757d" sx={{ fontSize: "0.9rem" }}>
-                      {completedCount} of {totalCount} subtests completed
+                      {completedCount} {t('of').toLowerCase()} {totalCount} {t('subtests_completed').toLowerCase()}
                     </Typography>
                   </Stack>
                   <LinearProgress
@@ -413,7 +424,7 @@ const SubtestClient: React.FC = () => {
                       >
                         <TimeIcon fontSize="small" />
                         <Typography variant="subtitle2" fontWeight={600}>
-                          Duration
+                          {t('duration')}
                         </Typography>
                       </Box>
                     </Grid>
@@ -432,7 +443,7 @@ const SubtestClient: React.FC = () => {
                       >
                         <AssignmentIcon fontSize="small" />
                         <Typography variant="subtitle2" fontWeight={600}>
-                          Subtest Title
+                          {t('subtest_title')}
                         </Typography>
                       </Box>
                     </Grid>
@@ -450,7 +461,7 @@ const SubtestClient: React.FC = () => {
                       >
                         <StatusIcon fontSize="small" />
                         <Typography variant="subtitle2" fontWeight={600}>
-                          Status
+                          {t('status')}
                         </Typography>
                       </Box>
                     </Grid>
@@ -516,10 +527,10 @@ const SubtestClient: React.FC = () => {
                               icon={getStatusIcon(subtest.status)}
                               label={
                                 subtest.status === "Not Started"
-                                  ? "NOT TAKEN"
+                                  ? t('Not Taken').toUpperCase()
                                   : subtest.status === "Completed"
-                                  ? "COMPLETED"
-                                  : subtest.status.toUpperCase()
+                                  ? t('Completed').toUpperCase()
+                                  : t('In Progress').toUpperCase()
                               }
                               size="small"
                               sx={{
@@ -566,7 +577,7 @@ const SubtestClient: React.FC = () => {
                         textShadow: progress < 100 ? "0 1px 2px rgba(0,0,0,0.2)" : "none",
                       }}
                     >
-                      {progress < 100 ? "🎯 Ready to Begin?" : "✅ All Subtests Completed!"}
+                      {progress < 100 ? `🎯 ${t('ready_to_begin')}` : "✅ All Subtests Completed!"}
                     </Typography>
                     <Typography
                       variant="body1"
@@ -577,8 +588,8 @@ const SubtestClient: React.FC = () => {
                       }}
                     >
                       {progress < 100
-                        ? "Start with any subtest above. Your progress will be automatically saved."
-                        : "You’ve completed all subtests! You can now return to the home page."}
+                        ? t('subtitle_rtb')
+                        : "You've completed all subtests! You can now return to the home page."}
                     </Typography>
                   </Box>
 
@@ -616,7 +627,7 @@ const SubtestClient: React.FC = () => {
                         }
                       }}
                     >
-                      START FIRST TEST
+                      {t('start_first_button').toUpperCase()}
                     </Button>
                   ) : (
                     <Button
@@ -641,7 +652,7 @@ const SubtestClient: React.FC = () => {
                       }}
                       onClick={() => navigate(`/client/${token}`)}
                     >
-                      BACK TO HOME
+                      {t('back_main_btn').toUpperCase()}
                     </Button>
                   )}
                 </Paper>
@@ -673,8 +684,8 @@ const SubtestClient: React.FC = () => {
             )}
             <Typography variant="h6" fontWeight={600}>
               {selectedCard?.status === "Completed"
-                ? "Subtest Already Completed"
-                : "Attempt Subtest"}
+                ? t('subtest_completed_title')
+                : t('attempt_subtest_title')}
             </Typography>
           </Stack>
         </DialogTitle>
@@ -683,14 +694,14 @@ const SubtestClient: React.FC = () => {
             <>
               {selectedCard.status === "Completed" ? (
                 <Alert severity="warning" sx={{ mb: 2 }}>
-                  <AlertTitle>Cannot Reattempt</AlertTitle>
-                  This subtest has already been completed and cannot be attempted again.
+                  <AlertTitle>{t('cannot_reattempt')}</AlertTitle>
+                  {t('subtest_completed_message')}
                 </Alert>
               ) : null}
               <Typography variant="body1">
                 {selectedCard.status === "Completed"
-                  ? `The subtest "${selectedCard.subtest_name}" has been completed. You cannot take this subtest again.`
-                  : `Are you sure you want to attempt "${selectedCard.subtest_name}"?`}
+                  ? t('subtest_completed_detail', { name: selectedCard.subtest_name })
+                  : t('confirm_attempt_subtest', { name: selectedCard.subtest_name })}
               </Typography>
             </>
           )}
@@ -704,7 +715,7 @@ const SubtestClient: React.FC = () => {
               fontWeight: 500,
             }}
           >
-            {selectedCard?.status === "Completed" ? "Close" : "Cancel"}
+            {selectedCard?.status === "Completed" ? t('close_button') : t('cancel_button')}
           </Button>
           {selectedCard?.status !== "Completed" && (
             <Button
@@ -716,7 +727,7 @@ const SubtestClient: React.FC = () => {
                 fontWeight: 600,
               }}
             >
-              Start Test
+              {t('start_button')}
             </Button>
           )}
         </DialogActions>

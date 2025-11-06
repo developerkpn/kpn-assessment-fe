@@ -5,7 +5,11 @@ import { FormControl, MenuItem, Select, SelectChangeEvent, Box, Typography } fro
 import React, { useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
-const LanguageSelector: React.FC = () => {
+interface LanguageSelectorProps {
+  variant?: "default" | "light";
+}
+
+const LanguageSelector: React.FC<LanguageSelectorProps> = ({ variant = "default" }) => {
   const { i18n } = useTranslation();
   const { selectedLanguage, availableLanguages, setSelectedLanguage, setAvailableLanguages } =
     useLanguageStore();
@@ -37,15 +41,49 @@ const LanguageSelector: React.FC = () => {
     return null;
   }
 
+  const isLight = variant === "light";
+
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <Language fontSize="small" />
+      <Language fontSize="small" sx={isLight ? { color: "white" } : {}} />
       <FormControl size="small" sx={{ minWidth: 150 }}>
         <Select
           value={selectedLanguage}
           onChange={handleLanguageChange}
           displayEmpty
+          renderValue={(value) => {
+            const selected = availableLanguages.find(lang => lang.language_code === value);
+            if (!selected) return null;
+            return (
+              <Box sx={{ display: "flex", flexDirection: "column" }}>
+                <Typography 
+                  variant="body2" 
+                  sx={isLight ? { color: "white" } : {}}
+                >
+                  {selected.language_name}
+                </Typography>
+                <Typography 
+                  variant="caption" 
+                  sx={isLight ? { color: "white" } : { color: "text.secondary" }}
+                >
+                  {selected.language_name_native}
+                </Typography>
+              </Box>
+            );
+          }}
           sx={{
+            ...(isLight && {
+              backgroundColor: "rgba(0, 0, 0, 0.12)",
+              "&:hover": {
+                backgroundColor: "rgba(0, 0, 0, 0.18)",
+              },
+              "& .MuiOutlinedInput-notchedOutline": {
+                border: "none",
+              },
+              "& .MuiSvgIcon-root": {
+                color: "white",
+              },
+            }),
             "& .MuiSelect-select": {
               py: 1,
             },

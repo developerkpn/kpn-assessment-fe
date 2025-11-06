@@ -1,14 +1,21 @@
 import { Card, Box, Button, Typography, Chip } from "@mui/material";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import dayjs from "dayjs";
+import "dayjs/locale/id";
+import "dayjs/locale/zh";
+import "dayjs/locale/ko";
+import "dayjs/locale/en";
 import moment from "moment";
 import { BatchMain } from "@/types/AssessmentTypes";
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import useAuthExternStore from "@/hooks/useAuthExternStore";
 import { snack } from "@/providers/SnackbarProvider";
 import useTokenDarwin from "@/hooks/useTokenDarwin";
+import { useTranslation } from "react-i18next";
 
 export default function CardOSBatches({ param }: { param: BatchMain }) {
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const is_complete = useAuthExternStore(state => state.is_complete);
   const token_drw = useTokenDarwin(state => state.token_drw);
@@ -40,13 +47,21 @@ export default function CardOSBatches({ param }: { param: BatchMain }) {
     navigate(`/client/${param.token}`);
   };
 
+  const formatDate = useCallback(
+    (dateString: string) => {
+      if (!dateString) return "N/A";
+      return dayjs(dateString).locale(i18n.language).format("D MMM YYYY, HH:mm");
+    },
+    [i18n.language]
+  );
+
   const start_period = useMemo(() => {
-    return startDate.format("D MMM YYYY, HH:mm");
-  }, [param.start_period]);
+    return formatDate(param.start_period);
+  }, [param.start_period, formatDate]);
 
   const end_period = useMemo(() => {
-    return endDate.format("D MMM YYYY, HH:mm");
-  }, [param.end_period]);
+    return formatDate(param.end_period);
+  }, [param.end_period, formatDate]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -74,7 +89,7 @@ export default function CardOSBatches({ param }: { param: BatchMain }) {
             {start_period} – {end_period}
           </Typography>
           <Chip
-            label={param.progress.status}
+            label={t(param.progress.status)}
             color={getStatusColor(param.progress.status)}
             size="small"
             sx={{ mt: 1 }}
@@ -87,7 +102,7 @@ export default function CardOSBatches({ param }: { param: BatchMain }) {
           startIcon={<PlayArrowIcon />}
           disabled={isDisabled}
         >
-          Start
+          {t('start')}
         </Button>
       </Box>
     </Card>

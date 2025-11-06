@@ -28,6 +28,7 @@ import Countdown from "react-countdown";
 import { CgMenuGridR } from "react-icons/cg";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import logo from "../../assets/kpn-logo.png";
 import ProctoringProvider from "./ProctoringProvider";
 import { BatchHeadAs } from "@/types/AssessmentTypes";
@@ -60,6 +61,7 @@ interface QuestionItem {
 }
 
 const QuestionAnswer: React.FC = () => {
+  const { t } = useTranslation();
   const API = useAPI();
   const setAllowWebCam = useWebCamCheck(state => state.setAllowWebCam);
   const setAllowScreen = useScreenCheck(state => state.setAllowScreen);
@@ -514,7 +516,7 @@ const QuestionAnswer: React.FC = () => {
                   </Typography>
                 </Box>
                 <Typography variant="body1" fontWeight={600} sx={{ mb: 3 }}>
-                  Question {currentQuestionIndex + 1}/{totalQuestions}
+                  {t('question')} {currentQuestionIndex + 1}/{totalQuestions}
                 </Typography>
 
                 <Box sx={{ mb: 4 }}>{parse(currentQuestion.input.text)}</Box>
@@ -730,7 +732,7 @@ const QuestionAnswer: React.FC = () => {
                 {!isMandatory && (
                   <Collapse in={hasSelection} timeout="auto" unmountOnExit>
                     <Button variant="outlined" color="primary" onClick={handleClearAll}>
-                      Clear All Choice
+                      {t('clear_all')}
                     </Button>
                   </Collapse>
                 )}
@@ -759,7 +761,7 @@ const QuestionAnswer: React.FC = () => {
                         },
                       }}
                     >
-                      Prev
+                      {t('prev')}
                     </Button>
 
                     {currentQuestionIndex < totalQuestions - 1 ? (
@@ -777,7 +779,7 @@ const QuestionAnswer: React.FC = () => {
                           },
                         }}
                       >
-                        Next
+                        {t('next_button')}
                       </Button>
                     ) : (
                       <Button
@@ -793,7 +795,7 @@ const QuestionAnswer: React.FC = () => {
                           },
                         }}
                       >
-                        Submit
+                        {t('submit')}
                       </Button>
                     )}
                   </Box>
@@ -802,13 +804,13 @@ const QuestionAnswer: React.FC = () => {
             </Paper>
 
             <DialogComp
-              title="Submit Assessment"
+              title={t('submit_assessment')}
               open={openSubmitDialog}
               onClose={handleCloseSubmitDialog}
               actions={
                 <>
                   <Button onClick={handleCloseSubmitDialog} variant="outlined" color="primary">
-                    Cancel
+                    {t('cancel_button')}
                   </Button>
                   <Button
                     onClick={handleConfirmSubmit}
@@ -816,19 +818,19 @@ const QuestionAnswer: React.FC = () => {
                     color="success"
                     loading={loading_submit}
                   >
-                    Submit
+                    {t('submit')}
                   </Button>
                 </>
               }
             >
               <Typography variant="body1" fontWeight="600" sx={{ mb: 2 }}>
-                Subtest: {assessmentData?.subtest_name}
+                {t('subtest_label')}: {assessmentData?.subtest_name}
               </Typography>
               <Box>
                 {hasDuration && (
                   <Box sx={{ bgcolor: "background.default", p: 2 }}>
                     <Typography variant="body2" color="text.secondary">
-                      Time remaining:{" "}
+                      {t('time_remaining')}:{" "}
                       <Typography component="span" color="primary">
                         <span
                           style={{
@@ -853,19 +855,19 @@ const QuestionAnswer: React.FC = () => {
                     <Typography variant="h5" fontWeight="600">
                       {totalQuestions}
                     </Typography>
-                    <Typography>Question</Typography>
+                    <Typography>{t('question')}</Typography>
                   </Box>
                   <Box sx={{ alignItems: "center", padding: 2 }}>
                     <Typography variant="h5" fontWeight="600">
                       {answeredCount}
                     </Typography>
-                    <Typography>Answered</Typography>
+                    <Typography>{t('answered')}</Typography>
                   </Box>
                   <Box sx={{ alignItems: "center", padding: 2 }}>
                     <Typography variant="h5" fontWeight="600">
                       {totalQuestions - answeredCount}
                     </Typography>
-                    <Typography>Unanswered</Typography>
+                    <Typography>{t('unanswered')}</Typography>
                   </Box>
                 </Box>
               </Box>

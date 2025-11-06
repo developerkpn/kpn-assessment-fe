@@ -144,11 +144,11 @@ const router = createBrowserRouter([
       },
       {
         path: "assessment/:token/subtest/:id/termspp",
-        element: <TermsPPPage />,
+        element: <TermsPPPage />, // disini
       },
       {
         path: "assessment/:token/subtest/:id/proctor",
-        element: <ProctoringCheckSession />,
+        element: <ProctoringCheckSession />, // test
       },
       {
         path: "assessment/:token/example/subtest/:id",

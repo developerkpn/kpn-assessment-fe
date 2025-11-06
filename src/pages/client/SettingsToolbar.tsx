@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import useAuthDarwinStore from "@/hooks/useAuthDarwinStore";
 import useAuthExternStore from "@/hooks/useAuthExternStore";
 import useTokenAssessee from "@/hooks/useTokenAssessee";
+import { useTranslation } from "react-i18next";
 
 export type SettingsToolbarRef = {
   logout: () => void;
@@ -22,6 +23,7 @@ export type SettingsToolbarRef = {
 
 const SettingsToolbar = forwardRef<SettingsToolbarRef, { setEditMode: (value: boolean) => void }>(
   ({ setEditMode }, ref) => {
+    const { t } = useTranslation();
     const resetTokenAs = useTokenAssessee(state => state.resetTokenAss);
     const type = useTokenAssessee(state => state.type);
     const setDarwinStore = useAuthDarwinStore(state => state.setDarwinStore);
@@ -64,7 +66,7 @@ const SettingsToolbar = forwardRef<SettingsToolbarRef, { setEditMode: (value: bo
                     logout();
                   }}
                 >
-                  <ListItemText primary="Logout" />
+                  <ListItemText primary={t('logout')} />
                 </ListItemButton>
               </ListItem>
               {type == "external" && (

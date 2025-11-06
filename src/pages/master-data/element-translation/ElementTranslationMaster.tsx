@@ -3,7 +3,7 @@ import useFetch from "@/hooks/useFetch";
 import CustomTable, { CustomTableColumn } from "@/components/CustomTable";
 import { Box, IconButton, Dialog, DialogTitle, DialogContent } from "@mui/material";
 import { Edit } from "@mui/icons-material";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ModalTranslation } from "./ModalTranslation";
 
 export default function ElementTranslationMasterPage() {
@@ -12,6 +12,18 @@ export default function ElementTranslationMasterPage() {
   );
   const [selectedRows, setSelectedRows] = useState<ElementTranslationMaster | null>(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const modalRef = useRef<{ isDirty: boolean }>(null);
+
+  // Update selectedRows when data changes (after refetch)
+  useEffect(() => {
+    if (selectedRows && data?.data) {
+      const updatedRow = data.data.find(item => item.element_id === selectedRows.element_id);
+      if (updatedRow) {
+        setSelectedRows(updatedRow);
+      }
+    }
+  }, [data]);
+  
   const column: CustomTableColumn<ElementTranslationMaster>[] = [
     {
       header: "Elements ID",
@@ -32,6 +44,9 @@ export default function ElementTranslationMasterPage() {
               onClick={e => {
                 setSelectedRows(data);
                 setOpenDialog(true);
+                if (modalRef.current) {
+                  modalRef.current.isDirty = false;
+                }
               }}
             />
           </IconButton>
@@ -48,6 +63,9 @@ export default function ElementTranslationMasterPage() {
         open={openDialog}
         onClose={() => {
           setOpenDialog(false);
+          if (modalRef.current?.isDirty) {
+             refetch();
+          }
         }}
         maxWidth="xl"
       >
@@ -55,7 +73,11 @@ export default function ElementTranslationMasterPage() {
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 4, minWidth: "80vw" }}>
             <em>{selectedRows?.description}</em>
-            <ModalTranslation data={selectedRows?.subtable ?? []} />
+            <ModalTranslation 
+              ref={modalRef}
+              data={selectedRows?.subtable ?? []} 
+              element_id={selectedRows?.element_id ?? ""}
+            />
           </Box>
         </DialogContent>
       </Dialog>

@@ -40,6 +40,7 @@ import { useTranslation } from "react-i18next";
 import "dayjs/locale/id";
 import "dayjs/locale/zh";
 import "dayjs/locale/ko";
+import "dayjs/locale/en";
 
 type TestStatus = "Completed" | "Not Completed" | "In Progress";
 
@@ -291,16 +292,15 @@ const WelcomeClient: React.FC = () => {
       <Box sx={{ mt: 4, textAlign: "center" }}>
         {allTestsCompleted ? (
           <Alert severity="success">
-            Congratulations! You have completed all assessments. You may now safely close the KPN
-            Online Assessment Platform tab.
+            {t('congratulations_complete_title')}
           </Alert>
         ) : (
           <Typography variant="body1" color="text.secondary">
-            After all test statuses are{" "}
+            {t('after_all_complete_message')}{" "}
             <Typography component="span" color="success.main" fontWeight="bold">
-              Completed
+              {t('Completed')}
             </Typography>
-            , you can close the KPN Online Assessment Platform tab.
+            {t('after_complete_close_message')}
           </Typography>
         )}
       </Box>

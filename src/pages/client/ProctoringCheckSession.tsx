@@ -26,8 +26,11 @@ import { useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ProctoringScreenCheck from "./ProctoringScreenCheck";
 import ProctoringWebcamCheck from "./ProctoringWebcamCheck";
+import { useTranslation } from "react-i18next";
+import LanguageSelector from "@/components/LanguageSelector";
 
 export default function ProctoringCheckSession() {
+  const { t } = useTranslation();
   const api = useAPI();
   const setAllowWebCam = useWebCamCheck(state => state.setAllowWebCam);
   const allowWebCam = useWebCamCheck(state => state.allowWebcam);
@@ -89,6 +92,16 @@ export default function ProctoringCheckSession() {
         >
           <ArrowBack />
         </IconButton>
+        <Box
+          sx={{
+            position: "absolute",
+            top: 16,
+            right: 16,
+            zIndex: 1,
+          }}
+        >
+          <LanguageSelector />
+        </Box>
 
         <Box
           sx={{
@@ -100,11 +113,10 @@ export default function ProctoringCheckSession() {
             justifyContent: "center",
           }}
         >
-          <h2>Proctoring Checking</h2>
+          <h2>{t('proctoring_title')}</h2>
           <Alert severity="warning" sx={{ width: "40rem" }}>
             <strong>
-              When "Screen Share" pop up appears, please choose "Entire Screen" to proceed test.
-              Make sure you are not connected to another screen
+              {t('proctoring_subtitle')}
             </strong>
           </Alert>
           <Box sx={{ display: "flex", gap: 3 }}>
@@ -115,13 +127,13 @@ export default function ProctoringCheckSession() {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell>Requirement</TableCell>
-                  <TableCell>Current</TableCell>
+                  <TableCell>{t('requirement')}</TableCell>
+                  <TableCell>{t('current')}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 <TableRow>
-                  <TableCell>Browser</TableCell>
+                  <TableCell>{t('browser')}</TableCell>
                   <TableCell>
                     <Box sx={{ display: "flex", alignItems: "center" }}>
                       {brwsr_app}{" "}
@@ -153,7 +165,7 @@ export default function ProctoringCheckSession() {
                 }
               }}
             >
-              Start
+              {t('start')}
             </Button>
           </Box>
         </Box>
@@ -162,7 +174,7 @@ export default function ProctoringCheckSession() {
         ref={refDialog}
         Content={
           <Box sx={{ p: 4 }}>
-            <h3>Are you sure want to continue?</h3>
+            <h3>{t('confirm_continue')}</h3>
           </Box>
         }
         onYes={onYes}

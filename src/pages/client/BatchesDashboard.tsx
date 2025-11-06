@@ -7,6 +7,7 @@ import { useForm } from "react-hook-form";
 import CardProfileClient from "./CardProfileClient";
 import ListCardOsBatches from "./ListCardOsBatches";
 import { SettingsToolbarRef } from "./SettingsToolbar";
+import LanguageSelector from "@/components/LanguageSelector";
 
 export default function BatchesDashboard() {
   const nik = useTokenDarwin(state => state.nik);
@@ -34,8 +35,9 @@ export default function BatchesDashboard() {
     <Box sx={{ heigth: "100vh", width: "100vw" }}>
       <Box sx={{ width: "100%" }}>
         <AppBar position="static">
-          <Box sx={{ px: 2 }}>
+          <Box sx={{ px: 2, py: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <h3>Assessment</h3>
+            <LanguageSelector variant="light" />
           </Box>
         </AppBar>
       </Box>

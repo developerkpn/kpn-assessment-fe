@@ -1,8 +1,8 @@
 import { forwardRef, useImperativeHandle, useState, useRef, useMemo, useEffect } from "react";
 import CustomTable, { CustomTableColumn } from "@/components/CustomTable";
 import { ElementTranslation, LanguageMaster } from "@/types/MasterData";
-import { MRT_Row, MRT_TableOptions, MRT_TableProps } from "material-react-table";
-import { Box, Dialog, IconButton, Tooltip, Button, TextField } from "@mui/material";
+import { MRT_Row, MRT_TableOptions } from "material-react-table";
+import { Box, IconButton, Tooltip, Button } from "@mui/material";
 import { Edit as EditIcon, Delete as DeleteIcon } from "@mui/icons-material";
 import DialogFormConfirmation, {
   RefDialogConfirmation,
@@ -18,70 +18,78 @@ interface TranslationRefInterface {
 
 interface TranslationInterface {
   data: ElementTranslation[];
+  element_id: string;
 }
 
 interface DeleteConfirmationModalRefInterface {
   openDeleteConfirmModal: (row: MRT_Row<ElementTranslation>) => void;
 }
 
-const DeleteConfirmationModal = forwardRef<DeleteConfirmationModalRefInterface>((props, ref) => {
-  const api = useAPI();
-  const [data, setData] = useState<MRT_Row<ElementTranslation>>();
-  const modalConf = useRef<RefDialogConfirmation>(null);
-  useImperativeHandle(ref, () => ({
-    openDeleteConfirmModal: row => {
-      modalConf.current?.setOpen(true);
-      setData(row);
-    },
-  }));
-  const onYes = async () => {
-    try {
-      console.log("delete");
-      console.log(data);
-      setTimeout(() => {}, 1000);
-      modalConf.current?.setOpen(false);
-      snack.success("Delete Success");
-    } catch (error) {
-      console.error(error);
-      let errmsg = "";
-      if (isAxiosError(error)) {
-        errmsg = error.response?.data.message;
-      } else {
-        errmsg = (error as Error).message;
+interface DeleteConfirmationProps {
+  onDeleteSuccess: (deletedId: string) => void;
+}
+
+const DeleteConfirmationModal = forwardRef<DeleteConfirmationModalRefInterface, DeleteConfirmationProps>(
+  ({ onDeleteSuccess }, ref) => {
+    const api = useAPI();
+    const [data, setData] = useState<MRT_Row<ElementTranslation>>();
+    const modalConf = useRef<RefDialogConfirmation>(null);
+    useImperativeHandle(ref, () => ({
+      openDeleteConfirmModal: row => {
+        modalConf.current?.setOpen(true);
+        setData(row);
+      },
+    }));
+    const onYes = async () => {
+      try {
+        const deletedId = data?.original.id;
+        await api.delete(`/languages/elements/${deletedId}`);
+        modalConf.current?.setOpen(false);
+        snack.success("Delete Success");
+        onDeleteSuccess(deletedId!);
+      } catch (error) {
+        console.error(error);
+        let errmsg = "";
+        if (isAxiosError(error)) {
+          errmsg = error.response?.data.message;
+        } else {
+          errmsg = (error as Error).message;
+        }
+        snack.error(errmsg);
       }
-      snack.error(errmsg);
-    }
-  };
+    };
   const onNo = () => {
     modalConf.current?.setOpen(false);
   };
 
-  return (
-    <DialogFormConfirmation
-      ref={modalConf}
-      onYes={onYes}
-      onNo={onNo}
-      Title={
-        <h4>
-          Delete Translation {data?.original.language_id} - {data?.original.element_id}
-        </h4>
-      }
-      Content={
-        <p>
-          Are you sure want to delete {data?.original.language_id} - {data?.original.element_id} ?
-        </p>
-      }
-    />
-  );
-});
+    return (
+      <DialogFormConfirmation
+        ref={modalConf}
+        onYes={onYes}
+        onNo={onNo}
+        Title={
+          <h4>
+            Delete Translation {data?.original.language_id} - {data?.original.element_id}
+          </h4>
+        }
+        Content={
+          <p>
+            Are you sure want to delete {data?.original.language_id} - {data?.original.element_id} ?
+          </p>
+        }
+      />
+    );
+  }
+);
 
 export const ModalTranslation = forwardRef<TranslationRefInterface, TranslationInterface>(
-  ({ data }, ref) => {
+  ({ data, element_id }, ref) => {
+    const api = useAPI();
     const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
     const { data: dtLanguage } = useFetch<{ data: LanguageMaster[] }>("/languages");
     const [isDirty, setIsDirty] = useState(false);
     const [tempData, setTempData] = useState<ElementTranslation[]>(data);
-    const [openDeleteModal, setOpenDeleteModal] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
     const DialogDeleteRef = useRef<DeleteConfirmationModalRefInterface | null>(null);
     const openDeleteConfirmModal = (row: MRT_Row<ElementTranslation>) => {
       DialogDeleteRef.current?.openDeleteConfirmModal(row);
@@ -111,6 +119,7 @@ export const ModalTranslation = forwardRef<TranslationRefInterface, TranslationI
       row,
       table,
     }) => {
+      const isMainLanguage = row.original.language_id === "en";
       return (
         <Box sx={{ display: "flex" }}>
           <Tooltip title="Edit">
@@ -118,11 +127,13 @@ export const ModalTranslation = forwardRef<TranslationRefInterface, TranslationI
               <EditIcon />
             </IconButton>
           </Tooltip>
-          <Tooltip title="Delete">
-            <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
-              <DeleteIcon />
-            </IconButton>
-          </Tooltip>
+          {!isMainLanguage && (
+            <Tooltip title="Delete">
+              <IconButton color="error" onClick={() => openDeleteConfirmModal(row)}>
+                <DeleteIcon />
+              </IconButton>
+            </Tooltip>
+          )}
         </Box>
       );
     };
@@ -133,32 +144,89 @@ export const ModalTranslation = forwardRef<TranslationRefInterface, TranslationI
       row,
     }) => {
       const id = row.original.id;
-      setTempData(prev => {
-        return prev.map(item => {
-          if (item.language_id == values.language_id) {
-            return { ...item, description: values.description };
-          } else {
-            return item;
-          }
+      setIsSaving(true);
+      try {
+        await api.put(`/languages/elements/${id}`, {
+          description: values.description,
         });
-      });
-      console.log(id);
-      console.log(values);
-      table.setEditingRow(null);
+        
+        setTempData(prev =>
+          prev.map(item =>
+            item.id === id ? { ...item, description: values.description } : item
+          )
+        );
+        
+        setIsDirty(true);
+        snack.success("Translation updated successfully");
+        table.setEditingRow(null);
+      } catch (error) {
+        console.error(error);
+        if (isAxiosError(error)) {
+          snack.error(error.response?.data.message);
+        } else {
+          snack.error((error as Error).message);
+        }
+      } finally {
+        setIsSaving(false);
+      }
     };
     const onCreatingRowSave: MRT_TableOptions<ElementTranslation>["onCreatingRowSave"] = async ({
       values,
+      table,
     }) => {
-      console.log(values);
-      console.log(existedLang);
       if (existedLang.has(values.language_id)) {
         setValidationErrors(prev => ({ ...prev, language_id: "Duplicate language not allowed" }));
+        return;
+      }
+
+      setIsSaving(true);
+      try {
+        const result = await api.post("/languages/elements", {
+          element_id: element_id,
+          language_id: values.language_id,
+          description: values.description,
+        });
+        
+        // Optimistic update: Add new translation to tempData
+        const newTranslation = result.data.data;
+        const languageInfo = dtLanguage?.data.find(lang => lang.language_code === values.language_id);
+        
+        setTempData(prev => [
+          ...prev,
+          {
+            ...newTranslation,
+            language_name: languageInfo?.language_name || '',
+            language_name_native: languageInfo?.language_name_native || '',
+          },
+        ]);
+        
+        setIsDirty(true);
+        snack.success("Translation created successfully");
+        table.setCreatingRow(null);
+        setValidationErrors({});
+      } catch (error) {
+        console.error(error);
+        if (isAxiosError(error)) {
+          snack.error(error.response?.data.message);
+        } else {
+          snack.error((error as Error).message);
+        }
+      } finally {
+        setIsSaving(false);
       }
     };
+
 
     useEffect(() => {
       console.log(validationErrors);
     }, [validationErrors]);
+
+    useEffect(() => {
+      console.log('Modal received data:', data);
+      setTempData(data);
+      // Reset isDirty when fresh data comes from parent
+      setIsDirty(false);
+    }, [data]);
     const renderTopToolbar: MRT_TableOptions<ElementTranslation>["renderTopToolbarCustomActions"] =
       ({ table }) => {
         return (
@@ -197,7 +265,14 @@ export const ModalTranslation = forwardRef<TranslationRefInterface, TranslationI
     ];
     return (
       <>
-        <DeleteConfirmationModal ref={DialogDeleteRef} />
+        <DeleteConfirmationModal 
+          ref={DialogDeleteRef} 
+          onDeleteSuccess={(deletedId) => {
+            // Optimistic update: Remove from tempData
+            setTempData(prev => prev.filter(item => item.id !== deletedId));
+            setIsDirty(true);
+          }} 
+        />
         <CustomTable
           data={tempData}
           columns={column}
@@ -206,6 +281,7 @@ export const ModalTranslation = forwardRef<TranslationRefInterface, TranslationI
           renderTopToolbarCustomActions={renderTopToolbar}
           enableGlobalFilter={false}
           onCreatingRowSave={onCreatingRowSave}
+          isLoading={isSaving}
         />
       </>
     );

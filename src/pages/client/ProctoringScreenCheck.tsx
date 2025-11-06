@@ -5,6 +5,7 @@ import { Button, Box } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import DialogNotWantedScreenShare from "./DialogNotWantedScreenShare";
 import { Check, Close } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -32,6 +33,7 @@ export default function ProctoringScreenCheck({
 }: {
   setAllowed: (value: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const setScreenStream = useScreenShareStore(state => state.setScreenStream);
   const screen_stream = useScreenShareStore(state => state.screen_stream);
@@ -90,12 +92,12 @@ export default function ProctoringScreenCheck({
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               {screen_stream ? (
                 <>
-                  <h4>Passed</h4>
+                  <h4>{t('passed')}</h4>
                   <Check sx={theme => ({ color: theme.palette.success.main })} />
                 </>
               ) : (
                 <>
-                  <h4>Denied</h4>
+                  <h4>{t('denied')}</h4>
                   <Close sx={theme => ({ color: theme.palette.error.main })} />
                 </>
               )}
@@ -107,7 +109,7 @@ export default function ProctoringScreenCheck({
               size="small"
               variant="contained"
             >
-              Check Screen Share
+              {t('check_screen_share')}
             </Button>
             <DialogNotWantedScreenShare open={openDialog} setOpen={setOpenDialog} />
           </Box>

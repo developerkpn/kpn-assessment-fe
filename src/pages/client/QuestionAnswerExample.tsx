@@ -24,6 +24,7 @@ import { isAxiosError } from "axios";
 import React, { useEffect, useMemo, useState } from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import logo from "../../assets/kpn-logo.png";
 import ProctoringProvider from "./ProctoringProvider";
 import parse from "html-react-parser";
@@ -47,6 +48,7 @@ interface QuestionItem {
 }
 
 const QuestionAnswerExample: React.FC = () => {
+  const { t } = useTranslation();
   const api = useAPI();
   const navigate = useNavigate();
   const { id, token } = useParams<{ id: string; token: string }>();
@@ -213,18 +215,18 @@ const QuestionAnswerExample: React.FC = () => {
               </Box>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Typography variant="h5">Example Question</Typography>
+              <Typography variant="h5">{t('example_question')}</Typography>
               <LanguageSelector />
             </Box>
           </Box>
 
           <Box sx={{ p: 4 }}>
             <Paper variant="outlined" sx={{ p: 2, my: 1 }}>
-              <h3 style={{ marginBottom: 1 }}>Introduction</h3>
+              <h3 style={{ marginBottom: 1 }}>{t('introduction')}</h3>
               <Box>{parse(intro_desc)}</Box>
             </Paper>
             <Typography variant="body1" fontWeight={600} sx={{ mb: 3 }}>
-              Question {currentQuestionIndex + 1}/{totalQuestions}
+              {t('question')} {currentQuestionIndex + 1}/{totalQuestions}
             </Typography>
 
             <Box sx={{ mb: 4 }}>{parse(currentQuestion.input.text)}</Box>
@@ -419,7 +421,7 @@ const QuestionAnswerExample: React.FC = () => {
 
             <Box sx={{ mb: 2 }}>
               <Button variant="outlined" onClick={handleClearAll}>
-                Clear All
+                {t('clear_all')}
               </Button>
             </Box>
 
@@ -430,7 +432,7 @@ const QuestionAnswerExample: React.FC = () => {
                 onClick={handlePrevQuestion}
                 disabled={currentQuestionIndex === 0}
               >
-                Prev
+                {t('prev')}
               </Button>
 
               {currentQuestionIndex < totalQuestions - 1 ? (
@@ -448,7 +450,7 @@ const QuestionAnswerExample: React.FC = () => {
                   onClick={handleOpenSubmitDialog}
                   sx={{ color: "white" }}
                 >
-                  Submit
+                  {t('submit')}
                 </Button>
               )}
             </Box>
@@ -456,19 +458,19 @@ const QuestionAnswerExample: React.FC = () => {
         </Paper>
 
         <DialogComp
-          title="Continue Test Assessment"
+          title={t('continue_test_assessment')}
           open={openSubmitDialog}
           onClose={handleCloseSubmitDialog}
           actions={
             <>
-              <Button onClick={handleCloseSubmitDialog}>Cancel</Button>
+              <Button onClick={handleCloseSubmitDialog}>{t('cancel_button')}</Button>
               <Button variant="contained" onClick={handleContinueToTest}>
-                Continue
+                {t('continue')}
               </Button>
             </>
           }
         >
-          <Typography>Are you sure want to continue?</Typography>
+          <Typography>{t('confirm_continue')}</Typography>
         </DialogComp>
       </Container>
     </ProctoringProvider>

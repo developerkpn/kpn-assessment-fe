@@ -14,6 +14,7 @@ import { useEffect, useRef, useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import SettingsToolbar, { SettingsToolbarRef } from "./SettingsToolbar";
 import FaceCaptureModal from "@/components/client/FaceCaptureModal";
+import { useTranslation } from "react-i18next";
 
 const Gender = [
   { value: "M", label: "Male" },
@@ -21,6 +22,7 @@ const Gender = [
 ];
 
 export default function CardProfileClient() {
+  const { t } = useTranslation();
   const api = useAPI();
   const darwin_sess = useAuthDarwinStore(state => state.darwin_sess);
   const type = useTokenAssessee(state => state.type);
@@ -262,7 +264,7 @@ export default function CardProfileClient() {
             readOnly
             control={control}
             name="email"
-            label="Email"
+            label={t('email_label')}
             size="small"
             sx={{ width: "20rem" }}
           />
@@ -310,7 +312,7 @@ export default function CardProfileClient() {
               readOnly
               control={control}
               name="comp_payroll"
-              label="Business Unit"
+              label={t('bu_label')}
               size="small"
               multiline={true}
               sx={{ width: "auto", minWidth: "20rem" }}
@@ -322,7 +324,7 @@ export default function CardProfileClient() {
               readOnly
               control={control}
               name="role_name"
-              label="Role"
+              label={t('role_label')}
               size="small"
               multiline={true}
               sx={{ width: "auto", minWidth: "20rem" }}
@@ -333,7 +335,7 @@ export default function CardProfileClient() {
             readOnly={!edit_mode && !data_ext}
             control={control}
             name="education"
-            label="Education"
+            label={t('edu_label')}
             size="small"
             multiline={true}
             sx={{ width: "auto", minWidth: "20rem" }}
@@ -343,7 +345,7 @@ export default function CardProfileClient() {
             readOnly={!edit_mode && !data_ext}
             control={control}
             name="institution"
-            label="Institution"
+            label={t('inst_label')}
             size="small"
             multiline={true}
             sx={{ width: "auto", minWidth: "20rem" }}
@@ -353,7 +355,7 @@ export default function CardProfileClient() {
               readOnly
               control={control}
               name="degree"
-              label="Degree"
+              label={t('deg_label')}
               size="small"
               sx={{ width: "20rem" }}
             />

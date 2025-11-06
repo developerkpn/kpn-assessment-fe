@@ -5,6 +5,7 @@ import { Box, Button } from "@mui/material";
 import { Check, Close } from "@mui/icons-material";
 import { snack } from "@/providers/SnackbarProvider";
 import useWebCamCheck from "@/hooks/useWebcamCheck";
+import { useTranslation } from "react-i18next";
 
 const VideoPreview = ({ stream }: { stream: MediaStream | null }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -33,6 +34,7 @@ export default function ProctoringWebcamCheck({
 }: {
   setAllowed: (value: boolean) => void;
 }) {
+  const { t } = useTranslation();
   const webcam_stream = useWebcamStore(state => state.webcam_stream);
   const allow_webcam = useWebCamCheck(state => state.allowWebcam);
   const setWebcamStream = useWebcamStore(state => state.setWebcamStream);
@@ -118,12 +120,12 @@ export default function ProctoringWebcamCheck({
             <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
               {webcam_stream ? (
                 <>
-                  <h4>Passed</h4>
+                  <h4>{t('passed')}</h4>
                   <Check sx={theme => ({ color: theme.palette.success.main })} />
                 </>
               ) : (
                 <>
-                  <h4>Denied</h4>
+                  <h4>{t('denied')}</h4>
                   <Close sx={theme => ({ color: theme.palette.error.main })} />
                 </>
               )}
@@ -155,7 +157,7 @@ export default function ProctoringWebcamCheck({
               size="small"
               variant="contained"
             >
-              Check Webcam
+              {t('check_webcam')}
             </Button>
           </Box>
         );

@@ -15,6 +15,7 @@ import { useEffect, useRef, useState } from "react";
 import { snack } from "@/providers/SnackbarProvider";
 import { isAxiosError } from "axios";
 import useGuidelineReadStore from "@/hooks/useGuidelineReadStore";
+import { useTranslation } from "react-i18next";
 pdfjs.GlobalWorkerOptions.workerSrc = `https://cdn.jsdelivr.net/npm/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 import "react-pdf/dist/Page/TextLayer.css";
 import "react-pdf/dist/Page/AnnotationLayer.css";
@@ -25,6 +26,7 @@ interface ModalViewerPDFInterface {
 }
 
 function ModalViewerPDF({ open, setOpen }: ModalViewerPDFInterface) {
+  const { t } = useTranslation();
   const api = useAPI();
   const [pages, setPages] = useState(1);
   const [PDFData, setPDFData] = useState(null);
@@ -62,8 +64,8 @@ function ModalViewerPDF({ open, setOpen }: ModalViewerPDFInterface) {
     <Dialog open={open} maxWidth="xl">
       <DialogTitle className="top" ref={refTop}>
         <Box className="client" sx={{ display: "flex", flexDirection: "column" }}>
-          <h3>User Guideline</h3>
-          <em>Please read carefully before doing this test</em>
+          <h3>{t('user_guideline_title')}</h3>
+          <em>{t('user_guideline_subtitle')}</em>
         </Box>
       </DialogTitle>
       <Box sx={{ m: 1 }}>

@@ -65,9 +65,9 @@ const Assignment: React.FC<AssignmentProps> = ({ control }) => {
   const assignFor = useMemo(() => {
     if (watch("assign_for")) {
       return watch("assign_for");
-    } else if (Scope?.data) {
-      setValue("assign_for", Scope?.data[0].scope_id);
-      return Scope?.data[0].scope_id;
+    } else if (Scope?.data && Scope.data.length > 0) {
+      setValue("assign_for", Scope.data[0].scope_id);
+      return Scope.data[0].scope_id;
     }
   }, [watch("assign_for"), Scope?.data]);
   const excelFile = watch("excel_file");
