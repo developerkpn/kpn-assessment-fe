@@ -233,8 +233,7 @@ export default function CardProfileClient() {
             width: 100,
             height: 100,
           })}
-        >
-        </Avatar>
+        ></Avatar>
         {data_emp && !data_ext && (
           <>
             {data_emp ? (
@@ -264,7 +263,7 @@ export default function CardProfileClient() {
             readOnly
             control={control}
             name="email"
-            label={t('email_label')}
+            label={t("email_label")}
             size="small"
             sx={{ width: "20rem" }}
           />
@@ -272,7 +271,7 @@ export default function CardProfileClient() {
             <SelectCtrl
               control={control}
               name="gender"
-              label="Gender"
+              label={t("Gender")}
               size="small"
               sx={{ width: "20rem" }}
               readOnly={!edit_mode}
@@ -290,7 +289,7 @@ export default function CardProfileClient() {
               readOnly
               control={control}
               name="date_of_birth"
-              label="Date of Birth"
+              label={t("Date of Birth")}
               size="small"
               sx={{ width: "20rem" }}
             />
@@ -299,7 +298,7 @@ export default function CardProfileClient() {
             <DatePickerCtrl
               control={control}
               name="date_of_birth_1"
-              label="Date of Birth"
+              label={t("Date of Birth")}
               size="small"
               sx={{ width: "14rem" }}
               format="YYYY-MM-DD"
@@ -312,7 +311,7 @@ export default function CardProfileClient() {
               readOnly
               control={control}
               name="comp_payroll"
-              label={t('bu_label')}
+              label={t("bu_label")}
               size="small"
               multiline={true}
               sx={{ width: "auto", minWidth: "20rem" }}
@@ -324,7 +323,7 @@ export default function CardProfileClient() {
               readOnly
               control={control}
               name="role_name"
-              label={t('role_label')}
+              label={t("role_label")}
               size="small"
               multiline={true}
               sx={{ width: "auto", minWidth: "20rem" }}
@@ -335,7 +334,7 @@ export default function CardProfileClient() {
             readOnly={!edit_mode && !data_ext}
             control={control}
             name="education"
-            label={t('edu_label')}
+            label={t("edu_label")}
             size="small"
             multiline={true}
             sx={{ width: "auto", minWidth: "20rem" }}
@@ -345,7 +344,7 @@ export default function CardProfileClient() {
             readOnly={!edit_mode && !data_ext}
             control={control}
             name="institution"
-            label={t('inst_label')}
+            label={t("inst_label")}
             size="small"
             multiline={true}
             sx={{ width: "auto", minWidth: "20rem" }}
@@ -355,7 +354,7 @@ export default function CardProfileClient() {
               readOnly
               control={control}
               name="degree"
-              label={t('deg_label')}
+              label={t("deg_label")}
               size="small"
               sx={{ width: "20rem" }}
             />

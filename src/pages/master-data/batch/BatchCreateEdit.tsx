@@ -229,9 +229,14 @@ const BatchCreateEdit: React.FC = () => {
       const languageId = methods.getValues("language_id");
 
       if (languageType && languageId) {
-        const existingIndex = description.findIndex(
-          entry => entry.language_type === languageType && entry.language_id === languageId
-        );
+        let existingIndex = 0;
+        if (languageType == "main") {
+          existingIndex = description.findIndex(entry => entry.language_type === languageType);
+        } else {
+          existingIndex = description.findIndex(
+            entry => entry.language_type === languageType && entry.language_id === languageId
+          );
+        }
 
         if (existingIndex >= 0) {
           // Update existing entry
@@ -264,7 +269,7 @@ const BatchCreateEdit: React.FC = () => {
           description: string;
           language_type: "main" | "sub";
         }>;
-
+        console.log(currentDescArray);
         if (Array.isArray(currentDescArray)) {
           const mainLanguageEntry = currentDescArray.find(
             entry => entry.language_type === "main" && entry.language_id === languageId

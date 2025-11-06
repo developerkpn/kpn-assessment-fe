@@ -9,15 +9,15 @@ const backendOptions = {
 // Get the default language from localStorage (Zustand persist)
 const getInitialLanguage = () => {
   try {
-    const stored = localStorage.getItem('language-store');
+    const stored = localStorage.getItem("language-store");
     if (stored) {
       const parsed = JSON.parse(stored);
-      return parsed.state?.selectedLanguage || 'en';
+      return parsed.state?.selectedLanguage || "id";
     }
   } catch (e) {
-    console.error('Failed to get language from localStorage', e);
+    console.error("Failed to get language from localStorage", e);
   }
-  return 'en'; // Default to English
+  return "id"; // Default to English
 };
 
 i18n
