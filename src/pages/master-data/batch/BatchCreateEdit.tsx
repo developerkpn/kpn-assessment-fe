@@ -1000,7 +1000,7 @@ const BatchCreateEdit: React.FC = () => {
         function_id: data.fm_id,
         template_email_id: data.email_template_id,
         is_mic: data.is_mic,
-        is_screenshot: data.is_screenshot,
+        is_screenshot: data.is_screenshot ?? false,
         cc_email: ccPayload,
         assessees: assesseesPayload,
         language_type: data.language_type,

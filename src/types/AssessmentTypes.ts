@@ -11,7 +11,7 @@ export type BatchMain = {
   progress: {
     status: string;
     percentage: number;
-  }
+  };
 };
 
 export type BatchHeadAs = BatchMain & {
@@ -39,6 +39,7 @@ export type ResponseDataEmpDarwin = {
 } & DarwinStore;
 
 export type ResponseDataEmpExt = {
+  user_id?: string;
   id?: string;
   name: string;
   email: string;

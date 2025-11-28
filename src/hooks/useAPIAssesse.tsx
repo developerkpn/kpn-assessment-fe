@@ -12,7 +12,6 @@ const useAPI = () => {
   const setExternStore = useAuthExternStore(state => state.setExternStore);
   const navigate = useNavigate();
   useEffect(() => {
-    console.log(token);
     const requestIntercept = API.interceptors.request.use(
       config => {
         if (!config.headers["Authorization"]) {

@@ -12,6 +12,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import logo from "../../assets/kpn-logo.png";
 import { DecodedToken } from "./RedirectPage";
 import assessment_logo from "@/assets/assessment.png";
+import LanguageSelector from "@/components/LanguageSelector";
+import { useTranslation } from "react-i18next";
 
 interface ExtLoginFormInt {
   email: string;
@@ -22,6 +24,7 @@ interface ExtLoginFormInt {
 }
 
 const ExternalLogin: React.FC = () => {
+  const { t } = useTranslation();
   const api = useAPI();
   const [is_registered, setIsReg] = useState(false);
   const setTokenExt = useTokenExternal(state => state.setTokenExt);
@@ -66,7 +69,6 @@ const ExternalLogin: React.FC = () => {
   };
 
   const submitLogin = async (values: ExtLoginFormInt) => {
-    console.log(values);
     try {
       if (is_registered) {
         let payload_login = { email: values.email, password: values.password };
@@ -154,6 +156,18 @@ const ExternalLogin: React.FC = () => {
   console.log(errors);
   return (
     <Box sx={{ bgcolor: "#e8f0f7", minHeight: "100vh", pt: 4, pb: 4 }}>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "flex-end",
+          width: "100vw",
+          flexGrow: 1,
+          px: 8,
+          py: 1,
+        }}
+      >
+        <LanguageSelector />
+      </Box>
       <Container maxWidth="sm">
         <Box
           sx={{
@@ -191,7 +205,7 @@ const ExternalLogin: React.FC = () => {
             </Box>
             {!is_registered && (
               <Alert severity="info" sx={{ my: 1 }}>
-                <strong>You are not registered to Assessment App, please sign up</strong>
+                <strong>{t("not_regis")}</strong>
               </Alert>
             )}
 
@@ -259,7 +273,7 @@ const ExternalLogin: React.FC = () => {
               </Button>
               <Box>
                 <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
-                  Are you KPN Corporation Employee? If you are
+                  {t("employee_kpn_url")}
                   <Button
                     variant="text"
                     onClick={() => {
@@ -327,7 +341,7 @@ const ExternalLogin: React.FC = () => {
                       },
                     }}
                   >
-                    Click here
+                    {t("employee_kpn_nav")}
                   </Button>
                 </Typography>
               </Box>

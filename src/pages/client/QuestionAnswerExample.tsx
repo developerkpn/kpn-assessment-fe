@@ -215,18 +215,18 @@ const QuestionAnswerExample: React.FC = () => {
               </Box>
             </Box>
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <Typography variant="h5">{t('example_question')}</Typography>
+              <Typography variant="h5">{t("example_question")}</Typography>
               <LanguageSelector />
             </Box>
           </Box>
 
           <Box sx={{ p: 4 }}>
             <Paper variant="outlined" sx={{ p: 2, my: 1 }}>
-              <h3 style={{ marginBottom: 1 }}>{t('introduction')}</h3>
+              <h3 style={{ marginBottom: 1 }}>{t("introduction")}</h3>
               <Box>{parse(intro_desc)}</Box>
             </Paper>
             <Typography variant="body1" fontWeight={600} sx={{ mb: 3 }}>
-              {t('question')} {currentQuestionIndex + 1}/{totalQuestions}
+              {t("question")} {currentQuestionIndex + 1}/{totalQuestions}
             </Typography>
 
             <Box sx={{ mb: 4 }}>{parse(currentQuestion.input.text)}</Box>
@@ -414,14 +414,14 @@ const QuestionAnswerExample: React.FC = () => {
                 sx={{ mb: 2 }}
               >
                 {currentAnswer === rightAnswers[currentQuestionIndex]
-                  ? "Answer Correct"
-                  : "Answer Incorrect"}
+                  ? t("Answer Correct")
+                  : t("Answer Incorrect")}
               </Alert>
             )}
 
             <Box sx={{ mb: 2 }}>
               <Button variant="outlined" onClick={handleClearAll}>
-                {t('clear_all')}
+                {t("clear_all")}
               </Button>
             </Box>
 
@@ -432,7 +432,7 @@ const QuestionAnswerExample: React.FC = () => {
                 onClick={handlePrevQuestion}
                 disabled={currentQuestionIndex === 0}
               >
-                {t('prev')}
+                {t("prev")}
               </Button>
 
               {currentQuestionIndex < totalQuestions - 1 ? (
@@ -441,7 +441,7 @@ const QuestionAnswerExample: React.FC = () => {
                   endIcon={<FaChevronRight />}
                   onClick={handleNextQuestion}
                 >
-                  Next
+                  {t("next_button")}
                 </Button>
               ) : (
                 <Button
@@ -450,7 +450,7 @@ const QuestionAnswerExample: React.FC = () => {
                   onClick={handleOpenSubmitDialog}
                   sx={{ color: "white" }}
                 >
-                  {t('submit')}
+                  {t("submit")}
                 </Button>
               )}
             </Box>
@@ -458,19 +458,19 @@ const QuestionAnswerExample: React.FC = () => {
         </Paper>
 
         <DialogComp
-          title={t('continue_test_assessment')}
+          title={t("continue_test_assessment")}
           open={openSubmitDialog}
           onClose={handleCloseSubmitDialog}
           actions={
             <>
-              <Button onClick={handleCloseSubmitDialog}>{t('cancel_button')}</Button>
+              <Button onClick={handleCloseSubmitDialog}>{t("cancel_button")}</Button>
               <Button variant="contained" onClick={handleContinueToTest}>
-                {t('continue')}
+                {t("continue")}
               </Button>
             </>
           }
         >
-          <Typography>{t('confirm_continue')}</Typography>
+          <Typography>{t("confirm_continue")}</Typography>
         </DialogComp>
       </Container>
     </ProctoringProvider>

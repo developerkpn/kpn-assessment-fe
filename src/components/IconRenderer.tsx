@@ -37,6 +37,8 @@ const importLazy = (icon: string) => {
       return lazy(() => import("@mui/icons-material/SupervisedUserCircle"));
     case "Subtitles":
       return lazy(() => import("@mui/icons-material/Subtitles"));
+    case "Language":
+      return lazy(() => import("@mui/icons-material/Language"));
     default:
       return HelpOutlineOutlined;
   }

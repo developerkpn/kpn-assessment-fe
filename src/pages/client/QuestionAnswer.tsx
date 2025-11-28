@@ -297,7 +297,7 @@ const QuestionAnswer: React.FC = () => {
         det_id: assessmentData?.det_id,
       });
       console.log(data);
-      snack.success("Your answer has been submitted");
+      snack.success(t("Your answer has been submitted"));
       // Cleanup stream setelah navigasi
       stopMediaStream(webcamStream);
       stopMediaStream(screenStream);
@@ -331,7 +331,7 @@ const QuestionAnswer: React.FC = () => {
             det_id: assessmentData?.det_id,
           });
           navigate(`/client/assessment/${token}/test/${data.test_id}`);
-          snack.success("Your answer has been submitted due to time limit");
+          snack.success(t("Your answer has been submitted due to time limit"));
           setTimeout(() => {
             stopMediaStream(webcamStream);
             stopMediaStream(screenStream);
@@ -481,30 +481,30 @@ const QuestionAnswer: React.FC = () => {
                           onComplete={handleCountdownComplete}
                           renderer={props => {
                             const { hours, minutes, seconds, completed } = props;
-                          const h = String(hours || 0).padStart(2, "0");
-                          const m = String(minutes || 0).padStart(2, "0");
-                          const s = String(seconds || 0).padStart(2, "0");
-                          const newTimeDisplay = `${h}:${m}:${s}`;
+                            const h = String(hours || 0).padStart(2, "0");
+                            const m = String(minutes || 0).padStart(2, "0");
+                            const s = String(seconds || 0).padStart(2, "0");
+                            const newTimeDisplay = `${h}:${m}:${s}`;
 
-                          // Update the display state if it changed
-                          if (newTimeDisplay !== timeDisplay) {
-                            setTimeDisplay(newTimeDisplay);
-                          }
+                            // Update the display state if it changed
+                            if (newTimeDisplay !== timeDisplay) {
+                              setTimeDisplay(newTimeDisplay);
+                            }
 
-                          return (
-                            <span
-                              style={{
-                                fontSize: "14px",
-                                color: timeDisplay <= "00:01:00" ? "#c41e1e" : "#1FB77D",
-                              }}
-                            >
-                              {completed ? "00:00:00" : timeDisplay}
-                            </span>
-                          );
-                        }}
-                      />
+                            return (
+                              <span
+                                style={{
+                                  fontSize: "14px",
+                                  color: timeDisplay <= "00:01:00" ? "#c41e1e" : "#1FB77D",
+                                }}
+                              >
+                                {completed ? "00:00:00" : timeDisplay}
+                              </span>
+                            );
+                          }}
+                        />
+                      </Typography>
                     </Typography>
-                  </Typography>
                   )}
                 </Box>
               </Box>
@@ -516,7 +516,7 @@ const QuestionAnswer: React.FC = () => {
                   </Typography>
                 </Box>
                 <Typography variant="body1" fontWeight={600} sx={{ mb: 3 }}>
-                  {t('question')} {currentQuestionIndex + 1}/{totalQuestions}
+                  {t("question")} {currentQuestionIndex + 1}/{totalQuestions}
                 </Typography>
 
                 <Box sx={{ mb: 4 }}>{parse(currentQuestion.input.text)}</Box>
@@ -732,7 +732,7 @@ const QuestionAnswer: React.FC = () => {
                 {!isMandatory && (
                   <Collapse in={hasSelection} timeout="auto" unmountOnExit>
                     <Button variant="outlined" color="primary" onClick={handleClearAll}>
-                      {t('clear_all')}
+                      {t("clear_all")}
                     </Button>
                   </Collapse>
                 )}
@@ -761,7 +761,7 @@ const QuestionAnswer: React.FC = () => {
                         },
                       }}
                     >
-                      {t('prev')}
+                      {t("prev")}
                     </Button>
 
                     {currentQuestionIndex < totalQuestions - 1 ? (
@@ -779,7 +779,7 @@ const QuestionAnswer: React.FC = () => {
                           },
                         }}
                       >
-                        {t('next_button')}
+                        {t("next_button")}
                       </Button>
                     ) : (
                       <Button
@@ -795,7 +795,7 @@ const QuestionAnswer: React.FC = () => {
                           },
                         }}
                       >
-                        {t('submit')}
+                        {t("submit")}
                       </Button>
                     )}
                   </Box>
@@ -804,13 +804,13 @@ const QuestionAnswer: React.FC = () => {
             </Paper>
 
             <DialogComp
-              title={t('submit_assessment')}
+              title={t("submit_assessment")}
               open={openSubmitDialog}
               onClose={handleCloseSubmitDialog}
               actions={
                 <>
                   <Button onClick={handleCloseSubmitDialog} variant="outlined" color="primary">
-                    {t('cancel_button')}
+                    {t("cancel_button")}
                   </Button>
                   <Button
                     onClick={handleConfirmSubmit}
@@ -818,19 +818,19 @@ const QuestionAnswer: React.FC = () => {
                     color="success"
                     loading={loading_submit}
                   >
-                    {t('submit')}
+                    {t("submit")}
                   </Button>
                 </>
               }
             >
               <Typography variant="body1" fontWeight="600" sx={{ mb: 2 }}>
-                {t('subtest_label')}: {assessmentData?.subtest_name}
+                {t("subtest_label")}: {assessmentData?.subtest_name}
               </Typography>
               <Box>
                 {hasDuration && (
                   <Box sx={{ bgcolor: "background.default", p: 2 }}>
                     <Typography variant="body2" color="text.secondary">
-                      {t('time_remaining')}:{" "}
+                      {t("time_remaining")}:{" "}
                       <Typography component="span" color="primary">
                         <span
                           style={{
@@ -855,19 +855,19 @@ const QuestionAnswer: React.FC = () => {
                     <Typography variant="h5" fontWeight="600">
                       {totalQuestions}
                     </Typography>
-                    <Typography>{t('question')}</Typography>
+                    <Typography>{t("question")}</Typography>
                   </Box>
                   <Box sx={{ alignItems: "center", padding: 2 }}>
                     <Typography variant="h5" fontWeight="600">
                       {answeredCount}
                     </Typography>
-                    <Typography>{t('answered')}</Typography>
+                    <Typography>{t("answered")}</Typography>
                   </Box>
                   <Box sx={{ alignItems: "center", padding: 2 }}>
                     <Typography variant="h5" fontWeight="600">
                       {totalQuestions - answeredCount}
                     </Typography>
-                    <Typography>{t('unanswered')}</Typography>
+                    <Typography>{t("unanswered")}</Typography>
                   </Box>
                 </Box>
               </Box>

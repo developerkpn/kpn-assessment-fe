@@ -18,7 +18,7 @@ import {
   MRT_TableProps,
   MRT_EditActionButtons,
 } from "material-react-table";
-import { ReactNode, useMemo, forwardRef, useImperativeHandle, Ref } from "react";
+import { ReactNode, useMemo, forwardRef, useImperativeHandle, Ref, useState } from "react";
 import { TableSkeleton } from "./Skeleton";
 import { RowSelectionState } from "@tanstack/react-table";
 
@@ -35,8 +35,10 @@ export interface CustomTableColumn<T extends Record<string, any> = {}> extends M
   width?: string | number;
 }
 
-export interface CustomTablePropsRef {
+export interface CustomTablePropsRef<T extends MRT_RowData> {
   GetSelectedData: () => RowSelectionState;
+  GetTableCreatingRow: () => MRT_Row<T> | null;
+  GetTableEditingRow: () => MRT_Row<T> | null;
 }
 
 export interface CustomTableProps<T extends Record<string, any> = {}> {
@@ -71,6 +73,8 @@ export interface CustomTableProps<T extends Record<string, any> = {}> {
   onEditingRowSave?: MRT_TableOptions<T>["onEditingRowSave"];
   renderTopToolbarCustomActions?: MRT_TableOptions<T>["renderTopToolbarCustomActions"];
   onCreatingRowSave?: MRT_TableOptions<T>["onCreatingRowSave"];
+  onEditingRowCancel?: MRT_TableOptions<T>["onEditingRowCancel"];
+  onCreatingRowCancel?: MRT_TableOptions<T>["onCreatingRowCancel"];
 }
 
 const CustomTable = forwardRef(
@@ -107,9 +111,13 @@ const CustomTable = forwardRef(
       onEditingRowSave,
       renderTopToolbarCustomActions,
       onCreatingRowSave,
+      onEditingRowCancel,
+      onCreatingRowCancel,
     }: CustomTableProps<T>,
-    ref: Ref<CustomTablePropsRef>
+    ref: Ref<CustomTablePropsRef<T>>
   ) => {
+    const [creatingRow, setCreatingRow] = useState<MRT_Row<T> | null>(null);
+    const [editingRow, setEditingRow] = useState<MRT_Row<T> | null>(null);
     // Transform our custom columns to MRT_ColumnDef columns
     const transformedColumns: MRT_ColumnDef<T>[] = useMemo(
       () =>
@@ -318,6 +326,14 @@ const CustomTable = forwardRef(
       createDisplayMode: "row",
       editDisplayMode: "row",
       onCreatingRowSave: onCreatingRowSave,
+      onEditingRowCancel: onEditingRowCancel,
+      onCreatingRowCancel: onCreatingRowCancel,
+      onCreatingRowChange: setCreatingRow,
+      onEditingRowChange: setEditingRow,
+      state: {
+        editingRow: editingRow,
+        creatingRow: creatingRow,
+      },
       // muiSelectCheckboxProps: {
       //   sx: {
       //     color: theme => theme.palette.primary.contrastText,
@@ -332,6 +348,12 @@ const CustomTable = forwardRef(
       return {
         GetSelectedData: () => {
           return table.getState().rowSelection;
+        },
+        GetTableEditingRow: () => {
+          return table.getState()?.editingRow;
+        },
+        GetTableCreatingRow: () => {
+          return table.getState()?.creatingRow;
         },
       };
     });
@@ -353,5 +375,5 @@ const CustomTable = forwardRef(
   }
 );
 export default CustomTable as <T extends Record<string, any> = {}>(
-  props: CustomTableProps<T> & { ref?: React.Ref<CustomTablePropsRef> }
+  props: CustomTableProps<T> & { ref?: React.Ref<CustomTablePropsRef<T>> }
 ) => React.ReactElement;

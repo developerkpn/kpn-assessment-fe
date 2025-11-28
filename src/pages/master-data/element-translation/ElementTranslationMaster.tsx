@@ -23,7 +23,7 @@ export default function ElementTranslationMasterPage() {
       }
     }
   }, [data]);
-  
+
   const column: CustomTableColumn<ElementTranslationMaster>[] = [
     {
       header: "Elements ID",
@@ -64,7 +64,7 @@ export default function ElementTranslationMasterPage() {
         onClose={() => {
           setOpenDialog(false);
           if (modalRef.current?.isDirty) {
-             refetch();
+            refetch();
           }
         }}
         maxWidth="xl"
@@ -73,10 +73,11 @@ export default function ElementTranslationMasterPage() {
         <DialogContent>
           <Box sx={{ display: "flex", flexDirection: "column", gap: 4, minWidth: "80vw" }}>
             <em>{selectedRows?.description}</em>
-            <ModalTranslation 
+            <ModalTranslation
               ref={modalRef}
-              data={selectedRows?.subtable ?? []} 
+              data={selectedRows?.subtable ?? []}
               element_id={selectedRows?.element_id ?? ""}
+              from_data={selectedRows}
             />
           </Box>
         </DialogContent>

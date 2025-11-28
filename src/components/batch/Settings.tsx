@@ -66,7 +66,7 @@ const Settings: React.FC<SettingsProps> = ({ control }) => {
               </Stack>
             </Stack>
           </Box> */}
-          <Box sx={{ border: "1px solid", padding: "8px", mt: 2 }}>
+          {/* <Box sx={{ border: "1px solid", padding: "8px", mt: 2 }}>
             <Stack
               direction="row"
               alignItems="center"
@@ -98,7 +98,7 @@ const Settings: React.FC<SettingsProps> = ({ control }) => {
                 />
               </Stack>
             </Stack>
-          </Box>
+          </Box> */}
         </Box>
         <Box
           sx={{

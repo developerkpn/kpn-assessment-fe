@@ -2,6 +2,7 @@ import { Dialog, DialogActions, Button, DialogTitle, DialogContent } from "@mui/
 import { useState, useMemo, ReactNode, useRef, useImperativeHandle, forwardRef } from "react";
 import { snack } from "@/providers/SnackbarProvider";
 import { isAxiosError } from "axios";
+import { useTranslation } from "react-i18next";
 
 export type RefDialogConfirmation = {
   setOpen: (value: boolean) => void;
@@ -13,10 +14,12 @@ interface DialogFormConfirmationInterface {
   onNo?: () => void;
   Title?: string | ReactNode;
   values?: any;
+  i18?: boolean;
 }
 
 const DialogFormConfirmation = forwardRef<RefDialogConfirmation, DialogFormConfirmationInterface>(
   (props, ref) => {
+    const { t } = useTranslation();
     const [loading, setLoading] = useState(false);
     const [open, setOpen] = useState(false);
 
@@ -55,7 +58,7 @@ const DialogFormConfirmation = forwardRef<RefDialogConfirmation, DialogFormConfi
 
           <DialogActions>
             <Button variant="outlined" color="error" onClick={() => onNoClick()}>
-              Cancel
+              {props.i18 ? t("Cancel") : "Cancel"}
             </Button>
             <Button
               onClick={async () => await onYesClick()}
@@ -63,7 +66,7 @@ const DialogFormConfirmation = forwardRef<RefDialogConfirmation, DialogFormConfi
               variant="contained"
               loading={loading}
             >
-              Confirm
+              {props.i18 ? t("Confirm") : "Confirm"}
             </Button>
           </DialogActions>
         </Dialog>

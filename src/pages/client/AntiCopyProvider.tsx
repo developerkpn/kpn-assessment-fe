@@ -1,10 +1,12 @@
 import { ReactNode, useEffect, useRef, useState } from "react";
 import { Backdrop, Box, Alert } from "@mui/material";
 import { Warning } from "@mui/icons-material";
+import { useTranslation } from "react-i18next";
 
 // import { GlobalKeyboardListener } from "node-global-key-listener";
 
 export default function AntiCopyProvider({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   // const v = new GlobalKeyboardListener();
   const [is_focus, setIsFocus] = useState(true);
   const backdropRef = useRef<any>(null);
@@ -103,7 +105,9 @@ export default function AntiCopyProvider({ children }: { children: ReactNode }) 
           <Alert severity="warning" icon={false}>
             <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
               <Warning color="warning" sx={{ width: "40px", height: "40px" }} />
-              <h2>Please focus on your test, hover back cursor to test area or press any key</h2>
+              <h2>
+                {t("Please focus on your test, hover back cursor to test area or press any key")}
+              </h2>
             </Box>
           </Alert>
         </Box>

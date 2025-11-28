@@ -23,7 +23,7 @@ const FunctionMenu = () => {
   const user_id = useAuthStore(state => state.user_id);
   const getPermission = useAuthStore(state => state.getPermission);
   const { showLoading, hideLoading } = useLoading();
-  const { data: fm, refetch } = useFetch<any>("/function-menu");
+  const { data: fm, refetch } = useFetch<any>("/function-menu/master");
   const [selected, setSelected] = useState({ id: "", name: "" });
   const [isEdit, setIsEdit] = useState(false);
   const { isOpen: isOpenDelete, open: openDelete, close: closeDelete } = useDialog();
