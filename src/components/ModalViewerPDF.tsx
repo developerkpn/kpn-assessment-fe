@@ -31,7 +31,6 @@ function ModalViewerPDF({ open, setOpen }: ModalViewerPDFInterface) {
   const [pages, setPages] = useState(1);
   const [PDFData, setPDFData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { setGuidelineStatus, guideline_status } = useGuidelineReadStore();
   const refTop = useRef<HTMLElement | null>(null);
   useEffect(() => {
     (async () => {
@@ -64,8 +63,8 @@ function ModalViewerPDF({ open, setOpen }: ModalViewerPDFInterface) {
     <Dialog open={open} maxWidth="xl">
       <DialogTitle className="top" ref={refTop}>
         <Box className="client" sx={{ display: "flex", flexDirection: "column" }}>
-          <h3>{t('user_guideline_title')}</h3>
-          <em>{t('user_guideline_subtitle')}</em>
+          <h3>{t("user_guideline_title")}</h3>
+          <em>{t("user_guideline_subtitle")}</em>
         </Box>
       </DialogTitle>
       <Box sx={{ m: 1 }}>
@@ -98,7 +97,7 @@ function ModalViewerPDF({ open, setOpen }: ModalViewerPDFInterface) {
                 setPageNum(pageNum + 1);
               }}
             >
-              Next
+              {t("next_button")}
             </Button>
           </>
         )}
@@ -109,10 +108,9 @@ function ModalViewerPDF({ open, setOpen }: ModalViewerPDFInterface) {
               color="success"
               onClick={e => {
                 setOpen(false);
-                setGuidelineStatus({ ...guideline_status, guideline_opened: true });
               }}
             >
-              Done
+              {t("Done")}
             </Button>
           </>
         )}

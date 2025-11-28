@@ -8,8 +8,10 @@ import CardProfileClient from "./CardProfileClient";
 import ListCardOsBatches from "./ListCardOsBatches";
 import { SettingsToolbarRef } from "./SettingsToolbar";
 import LanguageSelector from "@/components/LanguageSelector";
+import useGuidelineReadStore from "@/hooks/useGuidelineReadStore";
 
 export default function BatchesDashboard() {
+  const { setGuidelineStatus } = useGuidelineReadStore();
   const nik = useTokenDarwin(state => state.nik);
   const settingsRef = useRef<SettingsToolbarRef | null>(null);
   const data_emp = useAuthDarwinStore(state => state.darwin_sess);
@@ -21,6 +23,10 @@ export default function BatchesDashboard() {
       email: "",
     },
   });
+
+  useEffect(() => {
+    setGuidelineStatus({ batch_id: "", guideline_opened: false });
+  }, []);
 
   useEffect(() => {
     reset({
@@ -35,7 +41,15 @@ export default function BatchesDashboard() {
     <Box sx={{ heigth: "100vh", width: "100vw" }}>
       <Box sx={{ width: "100%" }}>
         <AppBar position="static">
-          <Box sx={{ px: 2, py: 1, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <Box
+            sx={{
+              px: 2,
+              py: 1,
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
             <h3>Assessment</h3>
             <LanguageSelector variant="light" />
           </Box>

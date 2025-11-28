@@ -41,6 +41,8 @@ import "dayjs/locale/id";
 import "dayjs/locale/zh";
 import "dayjs/locale/ko";
 import "dayjs/locale/en";
+import useAPI from "@/hooks/useAPI";
+import { AxiosResponse } from "axios";
 
 type TestStatus = "Completed" | "Not Completed" | "In Progress";
 
@@ -55,10 +57,10 @@ const WelcomeClient: React.FC = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const theme = useTheme();
+  const api = useAPI();
 
   const type = useTokenAssessee(state => state.type);
   const is_complete = useAuthExternStore(state => state.is_complete);
-  const { guideline_status, setGuidelineStatus } = useGuidelineReadStore();
   const [openGuideline, setOpenGuideline] = useState(false);
 
   useEffect(() => {
@@ -85,16 +87,20 @@ const WelcomeClient: React.FC = () => {
     if (!Batch?.data.id) {
       return;
     }
-    if (guideline_status.batch_id) {
-      if (guideline_status.batch_id != Batch.data.id || !guideline_status.guideline_opened) {
-        setGuidelineStatus({ ...guideline_status, guideline_opened: false });
-        setOpenGuideline(true);
-      }
-    } else {
-      setOpenGuideline(true);
-      setGuidelineStatus({ batch_id: Batch.data.id, guideline_opened: false });
+  }, [Batch]);
+
+  useEffect(() => {
+    if (token && !openGuideline) {
+      (async () => {
+        const { data }: AxiosResponse<{ data: boolean }> = await api.get(
+          `/assessment/guidelineopen/${token}`
+        );
+        if (data.data) {
+          setOpenGuideline(true);
+        }
+      })();
     }
-  }, [guideline_status.batch_id, Batch]);
+  }, [token]);
 
   useEffect(() => {
     if (Batch?.data?.batch_id) {
@@ -124,9 +130,6 @@ const WelcomeClient: React.FC = () => {
   const formatDate = useCallback(
     (dateString: string | undefined) => {
       if (!dateString) return "N/A";
-      console.log("format date change");
-      console.log(i18n.language);
-      console.log(dayjs(dateString).locale(i18n.language).format("D MMMM YYYY | HH:mm"));
       return dayjs(dateString).locale(i18n.language).format("D MMMM YYYY | HH:mm");
     },
     [i18n.language]
@@ -291,16 +294,14 @@ const WelcomeClient: React.FC = () => {
 
       <Box sx={{ mt: 4, textAlign: "center" }}>
         {allTestsCompleted ? (
-          <Alert severity="success">
-            {t('congratulations_complete_title')}
-          </Alert>
+          <Alert severity="success">{t("congratulations_complete_title")}</Alert>
         ) : (
           <Typography variant="body1" color="text.secondary">
-            {t('after_all_complete_message')}{" "}
+            {t("after_all_complete_message")}{" "}
             <Typography component="span" color="success.main" fontWeight="bold">
-              {t('Completed')}
+              {t("Completed")}
             </Typography>
-            {t('after_complete_close_message')}
+            {t("after_complete_close_message")}
           </Typography>
         )}
       </Box>
