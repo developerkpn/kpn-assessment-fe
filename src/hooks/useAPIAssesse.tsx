@@ -1,4 +1,4 @@
-import { API } from "@/utils/api";
+import { APIAssessee } from "@/utils/api";
 import { useEffect } from "react";
 import useTokenAssessee from "./useTokenAssessee";
 import useAuthDarwinStore from "./useAuthDarwinStore";
@@ -12,7 +12,7 @@ const useAPI = () => {
   const setExternStore = useAuthExternStore(state => state.setExternStore);
   const navigate = useNavigate();
   useEffect(() => {
-    const requestIntercept = API.interceptors.request.use(
+    const requestIntercept = APIAssessee.interceptors.request.use(
       config => {
         if (!config.headers["Authorization"]) {
           config.headers["Authorization"] = `Bearer ${token}`;
@@ -23,7 +23,7 @@ const useAPI = () => {
       error => Promise.reject(error)
     );
 
-    const responseIntercept = API.interceptors.response.use(
+    const responseIntercept = APIAssessee.interceptors.response.use(
       response => response,
       async error => {
         if (error?.response?.status === 403) {
@@ -38,12 +38,12 @@ const useAPI = () => {
     );
 
     return () => {
-      API.interceptors.request.eject(requestIntercept);
-      API.interceptors.response.eject(responseIntercept);
+      APIAssessee.interceptors.request.eject(requestIntercept);
+      APIAssessee.interceptors.response.eject(responseIntercept);
     };
   }, [token]);
 
-  return API;
+  return APIAssessee;
 };
 
 export default useAPI;

@@ -2,7 +2,7 @@ import useAuthDarwinStore from "@/hooks/useAuthDarwinStore";
 import useTokenDarwin from "@/hooks/useTokenDarwin";
 import useTokenExternal from "@/hooks/useTokenExternal";
 import useAuthExternStore from "@/hooks/useAuthExternStore";
-import useAPI from "@/hooks/useAPIAssesse";
+import useAPIAssessee from "@/hooks/useAPIAssesse";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
 import { Outlet } from "react-router-dom";
@@ -20,7 +20,7 @@ export default function VerifyClientToken() {
   const location = useLocation();
   const type_user = location?.state?.type;
   const email_token = location?.state?.token;
-  const api = useAPI();
+  const apiAssessee = useAPIAssessee();
   const token_as = useTokenAssessee(state => state.token_as);
   const setTokenAs = useTokenAssessee(state => state.setTokenAss);
   const resetTokenAs = useTokenAssessee(state => state.resetTokenAss);
@@ -37,7 +37,7 @@ export default function VerifyClientToken() {
       try {
         // if ?data is provided, decode it but incase token_as is empty
         if (enc_token) {
-          const { data: user_darwin } = await api.post(`/auth/darwin`, {
+          const { data: user_darwin } = await apiAssessee.post(`/auth/darwin`, {
             encoded_payload: enc_token,
           });
           setTokenAs({ token: user_darwin.token, type: "internal" });
@@ -67,7 +67,7 @@ export default function VerifyClientToken() {
     (async () => {
       try {
         if (!token_as) return;
-        const { data } = await api.get(`/assessee/profile`);
+        const { data } = await apiAssessee.get(`/assessee/profile`);
         if (data.type == "internal") {
           setDarwinStore(data.data);
           setExternStore(null);
