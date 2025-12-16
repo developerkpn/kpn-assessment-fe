@@ -206,7 +206,9 @@ export default function ProctoringCheckSession() {
                   if (allowScreen && allowWebCam && allowed) {
                     refDialog.current.setOpen(true);
                   } else {
-                    snack.error("Please make sure every proctoring requirement is allowed");
+                    snack.error(
+                      t("Please make sure every proctoring requirement is allowed") as string
+                    );
                   }
                 }
               }}
