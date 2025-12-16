@@ -217,7 +217,7 @@ const BatchReport = () => {
                 <InfoIcon sx={{ color: "info.light" }} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Download Report" placement="top" arrow>
+            {/* <Tooltip title="Download Report" placement="top" arrow>
               <IconButton
                 onClick={() => handleDownloadReport(id, batch_name, batch_code)}
                 aria-label="download report"
@@ -226,7 +226,7 @@ const BatchReport = () => {
               >
                 <DownloadIcon />
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
           </Box>
         );
       },
