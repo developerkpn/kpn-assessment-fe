@@ -1,8 +1,5 @@
 import useAPI from "./useAPIAssesse";
-import useAPIext from "./useAPIExt";
 import { useEffect, useState, useCallback } from "react";
-import useTokenDarwin from "./useTokenDarwin";
-import useTokenExternal from "./useTokenExternal";
 import { AxiosError, AxiosResponse } from "axios";
 import { BatchMain } from "@/types/AssessmentTypes";
 

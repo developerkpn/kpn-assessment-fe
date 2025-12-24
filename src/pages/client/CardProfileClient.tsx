@@ -1,7 +1,7 @@
 import DatePickerCtrl from "@/components/forms/DatePicker";
 import SelectCtrl from "@/components/forms/Select";
 import TextFieldCtrl from "@/components/forms/TextField";
-import useAPI from "@/hooks/useAPIExt";
+import useAPIAssesse from "@/hooks/useAPIAssesse";
 import useAuthDarwinStore from "@/hooks/useAuthDarwinStore";
 import useAuthExternStore from "@/hooks/useAuthExternStore";
 import useTokenAssessee from "@/hooks/useTokenAssessee";
@@ -23,7 +23,7 @@ const Gender = [
 
 export default function CardProfileClient() {
   const { t } = useTranslation();
-  const api = useAPI();
+  const api = useAPIAssesse();
   const darwin_sess = useAuthDarwinStore(state => state.darwin_sess);
   const type = useTokenAssessee(state => state.type);
   const id = darwin_sess?.employee_id;
