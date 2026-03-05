@@ -22,12 +22,14 @@ const BatchReport = () => {
   const API = useAPI();
   const navigate = useNavigate();
   const getPermission = useAuthStore(state => state.getPermission);
+  const roleName = useAuthStore(state => state.role_name);
   const { showLoading, hideLoading } = useLoading();
   const { data: data_report, loading } = useFetch<any>("/report");
   const [batch_id, setBatchId] = useState("");
   const [batch_name, setBatchname] = useState("");
   const refDialog = useRef<DialogListAssesseOnBatchRef>(null);
   const report_gen = useMemo(() => data_report?.data ?? [], [data_report]);
+  const isSuperAdmin = roleName === "Super Admin";
 
   console.log("report_gen", JSON.stringify(report_gen, null, 2));
 
@@ -217,16 +219,18 @@ const BatchReport = () => {
                 <InfoIcon sx={{ color: "info.light" }} />
               </IconButton>
             </Tooltip>
-            <Tooltip title="Download Report" placement="top" arrow>
-              <IconButton
-                onClick={() => handleDownloadReport(id, batch_name, batch_code)}
-                aria-label="download report"
-                size="small"
-                color="primary"
-              >
-                <DownloadIcon />
-              </IconButton>
-            </Tooltip>
+            {isSuperAdmin && (
+              <Tooltip title="Download Report" placement="top" arrow>
+                <IconButton
+                  onClick={() => handleDownloadReport(id, batch_name, batch_code)}
+                  aria-label="download report"
+                  size="small"
+                  color="primary"
+                >
+                  <DownloadIcon />
+                </IconButton>
+              </Tooltip>
+            )}
           </Box>
         );
       },
