@@ -4,7 +4,8 @@ import useAPI from "@/hooks/useAPIAssesse";
 import useTokenAssessee from "@/hooks/useTokenAssessee";
 import useTokenExternal from "@/hooks/useTokenExternal";
 import { snack } from "@/providers/SnackbarProvider";
-import { Alert, Box, Button, Container, Typography } from "@mui/material";
+import { Alert, Box, Button, Container, IconButton, Typography } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { AxiosResponse, isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -243,8 +244,18 @@ const ExternalLogin: React.FC = () => {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              position: "relative",
             }}
           >
+            {email_checked && !token && (
+              <IconButton
+                aria-label="back"
+                onClick={changeEmail}
+                sx={{ position: "absolute", top: 12, left: 12 }}
+              >
+                <ArrowBackIcon />
+              </IconButton>
+            )}
             <Box sx={{ display: "flex", alignItems: "center", mb: 5 }}>
               <Box component="img" src={logo} alt="Assessment Logo" sx={{ height: 40, mr: 2 }} />
               <Typography
@@ -256,7 +267,7 @@ const ExternalLogin: React.FC = () => {
                   mb: 0,
                 }}
               >
-                ASSESSMENT
+                KPN Online Assessment Platform
               </Typography>
             </Box>
             {campaign && (
@@ -297,16 +308,6 @@ const ExternalLogin: React.FC = () => {
                     },
                   }}
                 />
-                {email_checked && !token && (
-                  <Button
-                    variant="text"
-                    size="small"
-                    onClick={changeEmail}
-                    sx={{ textTransform: "none", color: "#d94560", p: 0, mt: 0.5 }}
-                  >
-                    Change email
-                  </Button>
-                )}
               </Box>
 
               {email_checked && !is_registered && (
