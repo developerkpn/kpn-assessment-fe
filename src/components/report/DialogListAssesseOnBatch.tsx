@@ -92,6 +92,45 @@ export const DialogListAssesseOnBatch = forwardRef<
     }
   };
 
+  const handleExportBatchExcel = async () => {
+    showLoading();
+    try {
+      const response = await API.get(`/report/exportscores/${Batchid}`, {
+        responseType: "blob",
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement("a");
+      link.href = url;
+
+      const contentDisposition = response.headers["content-disposition"];
+      let filename;
+      if (contentDisposition) {
+        const filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
+        const matches = filenameRegex.exec(contentDisposition);
+        if (matches != null && matches[1]) {
+          filename = matches[1].replace(/['"]/g, "");
+        }
+      }
+
+      link.setAttribute("download", filename || `${Batchname}-Scores.xlsx`);
+      document.body.appendChild(link);
+      link.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(link);
+
+      snack.success("Excel downloaded successfully");
+    } catch (error) {
+      if (isAxiosError(error)) {
+        snack.error(error.response?.data?.message || "Failed to download excel");
+      } else {
+        snack.error("An unexpected error occurred while downloading the excel");
+      }
+    } finally {
+      hideLoading();
+    }
+  };
+
   const handleDownloadReport = async (
     assessee_nik: string,
     assessee_email: string,
@@ -231,7 +270,7 @@ export const DialogListAssesseOnBatch = forwardRef<
       }}
       maxWidth="xl"
     >
-      <Box sx={{ p: 4, height: "80dvh", width: "90dvw" }}>
+      <Box sx={{ p: 4, height: "80dvh", width: "90dvw", display: "flex", flexDirection: "column" }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <Typography variant="h4" sx={{ mb: 2 }}>
             {Batchname}
@@ -245,17 +284,24 @@ export const DialogListAssesseOnBatch = forwardRef<
             Generate Bulk Report
           </Button>
         </Box>
-        <CustomTable
-          ref={refTable}
-          columns={columns}
-          data={data_user?.data ?? []}
-          isLoading={loading}
-          enableRowSelection={row => {
-            return !!row.original.last_finished_subtest_at;
-          }}
-          idAccessor={"assessee_nik"}
-          showSkeleton
-        />
+        <Box sx={{ flex: 1, minHeight: 0, overflow: "auto" }}>
+          <CustomTable
+            ref={refTable}
+            columns={columns}
+            data={data_user?.data ?? []}
+            isLoading={loading}
+            enableRowSelection={row => {
+              return !!row.original.last_finished_subtest_at;
+            }}
+            idAccessor={"assessee_nik"}
+            showSkeleton
+          />
+        </Box>
+        <Box sx={{ display: "flex", justifyContent: "flex-start", pt: 2 }}>
+          <Button variant="outlined" startIcon={<DownloadIcon />} onClick={handleExportBatchExcel}>
+            Export Excel
+          </Button>
+        </Box>
       </Box>
     </Dialog>
   );

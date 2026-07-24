@@ -44,6 +44,7 @@ const CreateAdmin = lazy(() => import("./pages/CreateAdmin"));
 const CreateEditRole = lazy(() => import("./pages/CreateEditRole"));
 const Landing = lazy(() => import("./pages/Landing"));
 const Batch = lazy(() => import("./pages/master-data/batch/Batch"));
+const UniversalLinks = lazy(() => import("./pages/master-data/universal-link/UniversalLinks"));
 const BatchCreateEdit = lazy(() => import("./pages/master-data/batch/BatchCreateEdit"));
 const BusinessUnit = lazy(() => import("./pages/master-data/BusinessUnit"));
 const Criteria = lazy(() => import("./pages/master-data/Criteria"));
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
   },
   {
     path: "login/client/:token",
+    element: <ExternalLogin />,
+  },
+  {
+    path: "join/:slug",
     element: <ExternalLogin />,
   },
   // {
@@ -325,6 +330,10 @@ const router = createBrowserRouter([
       {
         path: "batch",
         element: <Batch />,
+      },
+      {
+        path: "universal-link",
+        element: <UniversalLinks />,
       },
       {
         path: "batch/create",

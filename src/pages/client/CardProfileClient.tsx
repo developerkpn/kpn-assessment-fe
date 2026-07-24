@@ -114,15 +114,18 @@ export default function CardProfileClient() {
     console.log("data_emp", data_emp);
     console.log("data_ext", data_ext);
     if (data_emp) {
+      const latestEducation =
+        data_emp.education_details?.[data_emp.education_details.length - 1] ?? null;
+
       reset({
         date_of_birth: data_emp?.date_of_birth,
-        institution: data_emp?.education_details.slice(-1)[0].institution_name,
+        institution: latestEducation?.institution_name ?? "",
         phone: data_emp?.personal_mobile_no,
         comp_payroll: data_emp?.contribution_level,
         role_name: data_emp?.designation_name,
         email: data_emp?.company_email_id,
-        degree: data_emp?.education_details.slice(-1)[0].education_category,
-        education: data_emp?.education_details.slice(-1)[0].field_of_study,
+        degree: latestEducation?.education_category ?? "",
+        education: latestEducation?.field_of_study ?? "",
       });
     } else if (data_ext) {
       reset({

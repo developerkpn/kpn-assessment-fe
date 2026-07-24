@@ -27,10 +27,13 @@ const ExternalLogin: React.FC = () => {
   const { t } = useTranslation();
   const api = useAPI();
   const [is_registered, setIsReg] = useState(false);
+  const [email_checked, setEmailChecked] = useState(false);
+  const [campaign, setCampaign] = useState<{ link_name: string } | null>(null);
+  const [invalid_link, setInvalidLink] = useState(false);
   const setTokenExt = useTokenExternal(state => state.setTokenExt);
   const setTokenAs = useTokenAssessee(state => state.setTokenAss);
   const navigate = useNavigate();
-  const { token } = useParams();
+  const { token, slug } = useParams();
   const {
     control,
     handleSubmit,
@@ -66,6 +69,45 @@ const ExternalLogin: React.FC = () => {
       console.error(error);
       throw error;
     }
+  };
+
+  const checkEmail = async (values: ExtLoginFormInt) => {
+    try {
+      const { data: check_user }: AxiosResponse<{ is_exist: boolean; data: { name: string } | null }> =
+        await api.get(`/assessee/isreg/${values.email}`);
+      if (!check_user.data) {
+        snack.error("This email is not registered for any assessment");
+        return;
+      }
+      setIsReg(check_user.is_exist);
+      reset({
+        email: values.email,
+        name: check_user.data.name ?? "",
+        password: "",
+        new_password: "",
+        confirm_password: "",
+      });
+      setEmailChecked(true);
+    } catch (error) {
+      console.error(error);
+      if (isAxiosError(error)) {
+        snack.error(error.response?.data.message);
+      } else {
+        snack.error((error as Error).message);
+      }
+    }
+  };
+
+  const changeEmail = () => {
+    setEmailChecked(false);
+    setIsReg(true);
+    reset({
+      email: getValues("email"),
+      name: "",
+      password: "",
+      new_password: "",
+      confirm_password: "",
+    });
   };
 
   const submitLogin = async (values: ExtLoginFormInt) => {
@@ -125,6 +167,7 @@ const ExternalLogin: React.FC = () => {
           );
           if (decoded_tok.type == "internal") {
             setIsReg(true);
+            setEmailChecked(true);
             reset({
               name: "",
               email: "",
@@ -134,11 +177,12 @@ const ExternalLogin: React.FC = () => {
             });
             return;
           }
-          const { data: check_user }: AxiosResponse<{ is_exist: boolean; data: { name: string } }> =
+          const { data: check_user }: AxiosResponse<{ is_exist: boolean; data: { name: string } | null }> =
             await api.get(`/assessee/isreg/${decoded_tok.email}`);
           setIsReg(check_user.is_exist);
+          setEmailChecked(true);
           reset({
-            name: check_user.data.name,
+            name: check_user.data?.name ?? "",
             email: decoded_tok.email,
             new_password: "",
             confirm_password: "",
@@ -150,6 +194,18 @@ const ExternalLogin: React.FC = () => {
       })();
     } else {
       setIsReg(true);
+    }
+    if (slug) {
+      (async () => {
+        try {
+          const { data: link }: AxiosResponse<{ data: { link_name: string; slug: string } }> =
+            await api.get(`/public/universal-link/${slug}`);
+          setCampaign(link.data);
+        } catch (error) {
+          console.error(error);
+          setInvalidLink(true);
+        }
+      })();
     }
   }, []);
 
@@ -203,12 +259,23 @@ const ExternalLogin: React.FC = () => {
                 ASSESSMENT
               </Typography>
             </Box>
-            {!is_registered && (
+            {campaign && (
+              <Typography variant="h6" sx={{ mb: 3, mt: -3, fontWeight: 500, textAlign: "center" }}>
+                {campaign.link_name}
+              </Typography>
+            )}
+            {invalid_link && (
+              <Alert severity="error" sx={{ my: 1, width: "100%" }}>
+                <strong>This link is not available. Please contact your recruiter.</strong>
+              </Alert>
+            )}
+            {email_checked && !is_registered && (
               <Alert severity="info" sx={{ my: 1 }}>
                 <strong>{t("not_regis")}</strong>
               </Alert>
             )}
 
+            {!invalid_link && (
             <Box component="form" onSubmit={() => {}} sx={{ width: "100%" }}>
               <Box sx={{ mb: 3 }}>
                 <Typography variant="body1" sx={{ mb: 1, fontWeight: 500 }}>
@@ -220,6 +287,7 @@ const ExternalLogin: React.FC = () => {
                   type="email"
                   placeholder="your@email.com"
                   size="small"
+                  disabled={email_checked && !token}
                   sx={{ bgcolor: "#fff", mb: 0 }}
                   rules={{
                     required: "Email is required",
@@ -229,9 +297,19 @@ const ExternalLogin: React.FC = () => {
                     },
                   }}
                 />
+                {email_checked && !token && (
+                  <Button
+                    variant="text"
+                    size="small"
+                    onClick={changeEmail}
+                    sx={{ textTransform: "none", color: "#d94560", p: 0, mt: 0.5 }}
+                  >
+                    Change email
+                  </Button>
+                )}
               </Box>
 
-              {!is_registered && (
+              {email_checked && !is_registered && (
                 <>
                   <PasswordWithEyev2 control={control} name="new_password" label="New Password" />
                   <PasswordWithEyev2
@@ -246,7 +324,7 @@ const ExternalLogin: React.FC = () => {
                 </>
               )}
 
-              {is_registered && (
+              {email_checked && is_registered && (
                 <>
                   <PasswordWithEyev2 control={control} name="password" label="Password" />
                 </>
@@ -257,7 +335,7 @@ const ExternalLogin: React.FC = () => {
                 fullWidth
                 variant="contained"
                 loading={isSubmitting}
-                onClick={handleSubmit(submitLogin)}
+                onClick={handleSubmit(email_checked ? submitLogin : checkEmail)}
                 sx={{
                   py: 1.5,
                   bgcolor: "#d94560",
@@ -269,7 +347,7 @@ const ExternalLogin: React.FC = () => {
                   boxShadow: "none",
                 }}
               >
-                {is_registered ? "Login" : "Sign Up"}
+                {!email_checked ? "Continue" : is_registered ? "Login" : "Sign Up"}
               </Button>
               <Box>
                 <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
@@ -346,6 +424,7 @@ const ExternalLogin: React.FC = () => {
                 </Typography>
               </Box>
             </Box>
+            )}
           </Box>
         </Box>
       </Container>
