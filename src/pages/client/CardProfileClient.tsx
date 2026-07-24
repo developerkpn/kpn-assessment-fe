@@ -7,7 +7,7 @@ import useAuthExternStore from "@/hooks/useAuthExternStore";
 import useTokenAssessee from "@/hooks/useTokenAssessee";
 import { snack } from "@/providers/SnackbarProvider";
 import { ResponseDataEmpExt } from "@/types/AssessmentTypes";
-import { Avatar, Box, Button, Card, MenuItem, Skeleton } from "@mui/material";
+import { Avatar, Box, Button, Card, MenuItem, Skeleton, TextField } from "@mui/material";
 import { AxiosResponse, isAxiosError } from "axios";
 import dayjs, { Dayjs } from "dayjs";
 import { useEffect, useRef, useState, useMemo } from "react";
@@ -36,6 +36,7 @@ export default function CardProfileClient() {
     control,
     reset,
     handleSubmit,
+    watch,
     formState: { isSubmitting },
   } = useForm({
     defaultValues: {
@@ -270,14 +271,13 @@ export default function CardProfileClient() {
             size="small"
             sx={{ width: "20rem" }}
           />
-          {!data_emp && data_ext && (
+          {!data_emp && data_ext && edit_mode && (
             <SelectCtrl
               control={control}
               name="gender"
               label={t("Gender")}
               size="small"
               sx={{ width: "20rem" }}
-              readOnly={!edit_mode}
             >
               {Gender.map(value => (
                 <MenuItem key={value.value} value={value.value}>
@@ -285,6 +285,15 @@ export default function CardProfileClient() {
                 </MenuItem>
               ))}
             </SelectCtrl>
+          )}
+          {!data_emp && data_ext && !edit_mode && (
+            <TextField
+              label={t("Gender")}
+              size="small"
+              sx={{ width: "20rem" }}
+              value={Gender.find(g => g.value === watch("gender"))?.label ?? "-"}
+              slotProps={{ input: { readOnly: true } }}
+            />
           )}
           {!edit_mode && data_ext && (
             <TextFieldCtrl
