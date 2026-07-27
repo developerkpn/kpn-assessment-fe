@@ -29,7 +29,8 @@ const ExternalLogin: React.FC = () => {
   const api = useAPI();
   const [is_registered, setIsReg] = useState(false);
   const [email_checked, setEmailChecked] = useState(false);
-  const [campaign, setCampaign] = useState<{ link_name: string } | null>(null);
+  // Non-token flow: "login" = email+password langsung, "register" = cek email dulu lalu form registrasi
+  const [mode, setMode] = useState<"login" | "register">("login");
   const [invalid_link, setInvalidLink] = useState(false);
   const setTokenExt = useTokenExternal(state => state.setTokenExt);
   const setTokenAs = useTokenAssessee(state => state.setTokenAss);
@@ -80,7 +81,21 @@ const ExternalLogin: React.FC = () => {
         snack.error("This email is not registered for any assessment");
         return;
       }
-      setIsReg(check_user.is_exist);
+      if (check_user.is_exist) {
+        // Sudah punya password — arahkan balik ke form login
+        snack.info("This email is already registered. Please login.");
+        setMode("login");
+        setEmailChecked(false);
+        reset({
+          email: values.email,
+          name: "",
+          password: "",
+          new_password: "",
+          confirm_password: "",
+        });
+        return;
+      }
+      setIsReg(false);
       reset({
         email: values.email,
         name: check_user.data.name ?? "",
@@ -99,9 +114,10 @@ const ExternalLogin: React.FC = () => {
     }
   };
 
-  const changeEmail = () => {
+  // (dulu ada changeEmail — diganti backToLogin/goToRegister untuk alur login-first)
+  const backToLogin = () => {
+    setMode("login");
     setEmailChecked(false);
-    setIsReg(true);
     reset({
       email: getValues("email"),
       name: "",
@@ -109,6 +125,64 @@ const ExternalLogin: React.FC = () => {
       new_password: "",
       confirm_password: "",
     });
+  };
+
+  const goToRegister = () => {
+    setMode("register");
+    setEmailChecked(false);
+    reset({
+      email: getValues("email"),
+      name: "",
+      password: "",
+      new_password: "",
+      confirm_password: "",
+    });
+  };
+
+  const submitDirectLogin = async (values: ExtLoginFormInt) => {
+    try {
+      const result_login = await login({ email: values.email, password: values.password });
+      if (result_login) {
+        setTokenExt({ token: result_login?.data.access_token });
+        setTokenAs({ token: result_login?.data.access_token, type: "external" });
+        snack.success("Success Login");
+        setTimeout(() => navigate("/client/dashboard"), 1000);
+      }
+    } catch (error) {
+      console.error(error);
+      if (isAxiosError(error)) {
+        snack.error(error.response?.data.message);
+      } else {
+        snack.error((error as Error).message);
+      }
+    }
+  };
+
+  const submitRegister = async (values: ExtLoginFormInt) => {
+    try {
+      await register({
+        name: values.name,
+        email: values.email,
+        new_password: values.new_password,
+      });
+      snack.success("Success Registered. Please login.");
+      setMode("login");
+      setEmailChecked(false);
+      reset({
+        email: values.email,
+        name: "",
+        password: "",
+        new_password: "",
+        confirm_password: "",
+      });
+    } catch (error) {
+      console.error(error);
+      if (isAxiosError(error)) {
+        snack.error(error.response?.data.message);
+      } else {
+        snack.error((error as Error).message);
+      }
+    }
   };
 
   const submitLogin = async (values: ExtLoginFormInt) => {
@@ -197,11 +271,11 @@ const ExternalLogin: React.FC = () => {
       setIsReg(true);
     }
     if (slug) {
+      // Validasi slug: kalau tidak ada / nonaktif tampilkan pesan link tidak tersedia.
+      // Nama campaign sengaja tidak ditampilkan agar halaman generik seperti login eksternal.
       (async () => {
         try {
-          const { data: link }: AxiosResponse<{ data: { link_name: string; slug: string } }> =
-            await api.get(`/public/universal-link/${slug}`);
-          setCampaign(link.data);
+          await api.get(`/public/universal-link/${slug}`);
         } catch (error) {
           console.error(error);
           setInvalidLink(true);
@@ -247,10 +321,10 @@ const ExternalLogin: React.FC = () => {
               position: "relative",
             }}
           >
-            {email_checked && !token && (
+            {!token && mode === "register" && (
               <IconButton
                 aria-label="back"
-                onClick={changeEmail}
+                onClick={backToLogin}
                 sx={{ position: "absolute", top: 12, left: 12 }}
               >
                 <ArrowBackIcon />
@@ -270,17 +344,12 @@ const ExternalLogin: React.FC = () => {
                 KPN Online Assessment Platform
               </Typography>
             </Box>
-            {campaign && (
-              <Typography variant="h6" sx={{ mb: 3, mt: -3, fontWeight: 500, textAlign: "center" }}>
-                {campaign.link_name}
-              </Typography>
-            )}
             {invalid_link && (
               <Alert severity="error" sx={{ my: 1, width: "100%" }}>
                 <strong>This link is not available. Please contact your recruiter.</strong>
               </Alert>
             )}
-            {email_checked && !is_registered && (
+            {email_checked && !is_registered && (token || mode === "register") && (
               <Alert severity="info" sx={{ my: 1 }}>
                 <strong>{t("not_regis")}</strong>
               </Alert>
@@ -310,7 +379,8 @@ const ExternalLogin: React.FC = () => {
                 />
               </Box>
 
-              {email_checked && !is_registered && (
+              {/* Form registrasi: token flow (email dari token) atau mode register setelah cek email */}
+              {email_checked && !is_registered && (token || mode === "register") && (
                 <>
                   <PasswordWithEyev2 control={control} name="new_password" label="New Password" />
                   <PasswordWithEyev2
@@ -325,10 +395,9 @@ const ExternalLogin: React.FC = () => {
                 </>
               )}
 
-              {email_checked && is_registered && (
-                <>
-                  <PasswordWithEyev2 control={control} name="password" label="Password" />
-                </>
+              {/* Password login: token flow terdaftar, atau mode login (default non-token) */}
+              {((token && email_checked && is_registered) || (!token && mode === "login")) && (
+                <PasswordWithEyev2 control={control} name="password" label="Password" />
               )}
 
               <Button
@@ -336,7 +405,17 @@ const ExternalLogin: React.FC = () => {
                 fullWidth
                 variant="contained"
                 loading={isSubmitting}
-                onClick={handleSubmit(email_checked ? submitLogin : checkEmail)}
+                onClick={handleSubmit(
+                  token
+                    ? email_checked
+                      ? submitLogin
+                      : checkEmail
+                    : mode === "login"
+                      ? submitDirectLogin
+                      : email_checked
+                        ? submitRegister
+                        : checkEmail
+                )}
                 sx={{
                   py: 1.5,
                   bgcolor: "#d94560",
@@ -348,8 +427,36 @@ const ExternalLogin: React.FC = () => {
                   boxShadow: "none",
                 }}
               >
-                {!email_checked ? "Continue" : is_registered ? "Login" : "Sign Up"}
+                {token
+                  ? !email_checked
+                    ? "Continue"
+                    : is_registered
+                      ? "Login"
+                      : "Sign Up"
+                  : mode === "login"
+                    ? "Login"
+                    : !email_checked
+                      ? "Continue"
+                      : "Sign Up"}
               </Button>
+              {!token && mode === "login" && (
+                <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
+                  {t("no_account_yet")}{" "}
+                  <Box
+                    component="span"
+                    onClick={goToRegister}
+                    sx={{
+                      color: "#d94560",
+                      fontWeight: 500,
+                      textDecoration: "underline",
+                      cursor: "pointer",
+                      "&:hover": { textDecoration: "underline" },
+                    }}
+                  >
+                    {t("register_here")}
+                  </Box>
+                </Typography>
+              )}
               <Box>
                 <Typography variant="body2" sx={{ mt: 2, textAlign: "center" }}>
                   {t("employee_kpn_url")}
@@ -369,6 +476,10 @@ const ExternalLogin: React.FC = () => {
                       fontWeight: 500,
                       padding: 0,
                       ml: 1,
+                      minWidth: 0,
+                      verticalAlign: "baseline",
+                      lineHeight: "inherit",
+                      fontSize: "inherit",
                       position: "relative",
                       "&:hover": {
                         textDecoration: "underline",
