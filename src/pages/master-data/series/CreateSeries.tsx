@@ -48,7 +48,7 @@ const CreateSeries: React.FC = () => {
   const [selectedQuestion, setSelectedQuestion] = useState<QuestionData | null>(null);
   const { data: categories } = useFetch<{
     data: { id: string; category_code: string; category_name: string }[];
-  }>("/category");
+  }>("/category/active");
   const { data: question } = useFetch<any>("/question");
   const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({});
   const handleCategoryChange = (_: any, value: any[]) => {

@@ -68,7 +68,7 @@ const CreateEditQuestion = ({
   const { showLoading, hideLoading } = useLoading();
   const { isOpen, open, close } = useDialog();
   const { data: question } = useFetch<any>(isEdit ? `/question/${id}` : null);
-  const { data: categories } = useFetch<any>("/category");
+  const { data: categories } = useFetch<any>("/category/active");
   const { data: languages } = useFetch<any>("/languages");
   const { data: languagesWithStatus } = useFetch<any>(
     isEdit && id ? `/question/${id}/languages` : null

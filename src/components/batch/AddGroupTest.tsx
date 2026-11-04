@@ -64,7 +64,7 @@ const AddGroupTest: React.FC<AddGroupTestProps> = ({ control, batchData }) => {
     return "";
   };
   const [loading, setLoading] = useState(false);
-  const { data: grouptests } = useFetch<any>("/grouptest");
+  const { data: grouptests } = useFetch<any>("/grouptest/active");
 
   const grouptest_id = watch("grouptest_id");
   const groupTest = watch("grouptest") || [];

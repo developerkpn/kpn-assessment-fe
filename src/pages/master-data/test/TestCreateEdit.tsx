@@ -33,7 +33,7 @@ const TestCreateEdit = () => {
   const { data: availableSubtest, refetch: refetchAvailableSubtest } = useFetch<{ data: any[] }>(
     isEdit ? `/test/${id}/subtest-available` : null
   );
-  const { data: allSubtest } = useFetch<{ data: any[] }>(!isEdit ? `/subtest` : null);
+  const { data: allSubtest } = useFetch<{ data: any[] }>(!isEdit ? `/subtest/active` : null);
   const { isOpen: isOpenDelete, open: openDelete, close: closeDelete } = useDialog();
   const [selectedRows, setSelectedRows] = useState({});
   const [selectedTest, setSelectedTest] = useState<{ id: string; subtest_name: string } | null>(
@@ -41,7 +41,7 @@ const TestCreateEdit = () => {
   );
   const [didReset, setDidReset] = useState(false);
   const { isOpen: isOpenForm, open: openForm, close: closeForm } = useDialog();
-  const { data: categoryData } = useFetch<any>(`/category`);
+  const { data: categoryData } = useFetch<any>(`/category/active`);
 
   const { control, handleSubmit, reset, watch, setValue } = useForm({
     defaultValues: {

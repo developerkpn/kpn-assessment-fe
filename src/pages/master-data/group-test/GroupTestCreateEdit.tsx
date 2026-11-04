@@ -31,7 +31,7 @@ const GroupTestCreateEdit = () => {
   const { data: availableTest, refetch: refetchAvailableTest } = useFetch<{ data: any[] }>(
     isEdit ? `/grouptest/${id}/tests-available` : null
   );
-  const { data: allTest } = useFetch<{ data: any[] }>(!isEdit ? `/test` : null);
+  const { data: allTest } = useFetch<{ data: any[] }>(!isEdit ? `/test/active` : null);
   const { isOpen: isOpenDelete, open: openDelete, close: closeDelete } = useDialog();
   const [selectedRows, setSelectedRows] = useState({});
   const [selectedTest, setSelectedTest] = useState<{ id: string; test_name: string } | null>(null);

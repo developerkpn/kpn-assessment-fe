@@ -29,7 +29,7 @@ const SubTestCreateEdit = () => {
     const { data: availableSeries, refetch: refetchAvailableSeries } = useFetch<{ data: any[] }>(
         isEdit ? `/subtest/${id}/series-available` : null
     );
-    const { data: allSeries } = useFetch<{ data: any[] }>(!isEdit ? `/series` : null);
+    const { data: allSeries } = useFetch<{ data: any[] }>(!isEdit ? `/series/active` : null);
     const { data: criteria } = useFetch<any>(`/criteria`)
     const { isOpen: isOpenDelete, open: openDelete, close: closeDelete } = useDialog();
     const { isOpen: isOpenForm, open: openForm, close: closeForm } = useDialog();

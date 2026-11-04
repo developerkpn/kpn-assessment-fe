@@ -44,7 +44,7 @@ const CreateAdmin = () => {
   const { showLoading, hideLoading } = useLoading();
   const { data: role } = useFetch<any>("/admin/role");
   const { data: adminData, loading } = useFetch<any>(id ? `/admin/${id}` : null);
-  const { data: bu_data } = useFetch<{ message: string; data: BUValues[] }>("/bu");
+  const { data: bu_data } = useFetch<{ message: string; data: BUValues[] }>("/bu/active");
   const { data: scope_data } = useFetch<{ data: ScopeValues[] }>("/scope");
   const bu_opt = useMemo(() => {
     if (!bu_data?.data) {
