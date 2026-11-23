@@ -399,7 +399,7 @@ const BatchCreateEdit: React.FC = () => {
   };
 
   const handleTabChange = (_: React.SyntheticEvent, newValue: number) => {
-    if (completedSteps[newValue - 1] || newValue <= activeTab) {
+    if (isEdit || completedSteps[newValue - 1] || newValue <= activeTab) {
       setActiveTab(newValue);
     }
   };
