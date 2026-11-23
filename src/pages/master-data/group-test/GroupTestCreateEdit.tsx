@@ -13,6 +13,8 @@ import useDialog from "@/hooks/useDialog";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CheckboxCtrl from "@/components/forms/Checkbox.tsx";
+import RTEField from "@/components/forms/RTEField";
+import useAuthStore from "@/hooks/useAuthStore";
 import InfoIcon from "@mui/icons-material/Info";
 import { isAxiosError } from "axios";
 // import {GroupTestDetail} from "@/types/MasterData.ts";
@@ -35,11 +37,14 @@ const GroupTestCreateEdit = () => {
   const { isOpen: isOpenDelete, open: openDelete, close: closeDelete } = useDialog();
   const [selectedRows, setSelectedRows] = useState({});
   const [selectedTest, setSelectedTest] = useState<{ id: string; test_name: string } | null>(null);
+  const roleName = useAuthStore(state => state.role_name);
+  const isSuperAdmin = roleName === "Super Admin";
 
   const { control, handleSubmit, trigger, reset } = useForm({
     defaultValues: {
       grouptest_name: "",
       grouptest_code: "",
+      instruction: "",
       is_active: true,
       tests: [],
     },
@@ -52,6 +57,7 @@ const GroupTestCreateEdit = () => {
       reset({
         grouptest_name: grouptest?.data.grouptest_name,
         grouptest_code: grouptest?.data.grouptest_code,
+        instruction: grouptest?.data.instruction || "",
         is_active: grouptest?.data.is_active,
       });
     }
@@ -272,7 +278,7 @@ const GroupTestCreateEdit = () => {
   const onSubmit = async (values: any) => {
     showLoading();
     try {
-      const payload = {
+      const payload: any = {
         grouptest_name: values.grouptest_name,
         grouptest_code: values.grouptest_code,
         is_active: values.is_active,
@@ -280,6 +286,10 @@ const GroupTestCreateEdit = () => {
           test_id: id,
         })),
       };
+
+      if (isSuperAdmin) {
+        payload.instruction = values.instruction || "";
+      }
 
       if (isEdit) {
         await API.patch(`/grouptest/${id}`, payload);
@@ -349,6 +359,17 @@ const GroupTestCreateEdit = () => {
             required: "Field required",
             maxLength: { value: 16, message: "Maximum 16 characters allowed" },
           }}
+        />
+      </Box>
+
+      <Box sx={{ mb: 4, mt: 1 }}>
+        <RTEField
+          name="instruction"
+          control={control}
+          label="Instruction"
+          placeholder="Write Instruction"
+          disabled={!isSuperAdmin}
+          sx={{ height: "12rem", mb: 6 }}
         />
       </Box>
 

@@ -348,7 +348,7 @@ const BatchCreateEdit: React.FC = () => {
     {
       label: "Batch Overview",
       Component: BatchOverview,
-      fields: ["batch_name", "description"],
+      fields: ["batch_name"],
       // fields: [],
     },
     {

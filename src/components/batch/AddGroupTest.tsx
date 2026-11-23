@@ -81,6 +81,27 @@ const AddGroupTest: React.FC<AddGroupTestProps> = ({ control, batchData }) => {
       const response = await API.get(`/grouptest/${grouptest_id}`);
       console.log("Group Test: ", response.data.data);
       setValue("grouptest", response.data.data);
+
+      const instruction = response.data.data?.instruction || "";
+      if (instruction) {
+        setValue("temp_description", instruction);
+        const currentDesc = watch("description");
+        if (typeof currentDesc === "string") {
+          setValue("description", instruction);
+        } else if (Array.isArray(currentDesc)) {
+          const mainIdx = currentDesc.findIndex((d: any) => d.language_type === "main");
+          if (mainIdx >= 0) {
+            currentDesc[mainIdx].description = instruction;
+          } else {
+            currentDesc.push({
+              language_id: watch("language_id") || "id",
+              description: instruction,
+              language_type: "main",
+            });
+          }
+          setValue("description", [...currentDesc]);
+        }
+      }
     } catch (error) {
       console.error("Error fetching group test", error);
       if (isAxiosError(error)) {

@@ -114,10 +114,6 @@ const Batch = () => {
                 <Tooltip title="Edit Batch" placement="top" arrow>
                   <IconButton
                     onClick={() => {
-                      if (row.original.status === "Published") {
-                        snack.warning("Cannot edit, batch already published");
-                        return;
-                      }
                       navigate(`/admin/batch/edit/${id}`);
                     }}
                     aria-label="edit"

@@ -3,6 +3,7 @@ import React, { useEffect, useRef } from "react";
 import { Control, useWatch, useFormContext } from "react-hook-form";
 import TextFieldCtrl from "../forms/TextField";
 import RTEField from "../forms/RTEField";
+import useAuthStore from "@/hooks/useAuthStore";
 
 type BatchOverviewProps = {
   control: Control<any>;
@@ -18,6 +19,8 @@ const BatchOverview: React.FC<BatchOverviewProps> = ({
   setDescriptionValue 
 }) => {
   const { setValue } = useFormContext();
+  const roleName = useAuthStore(state => state.role_name);
+  const isSuperAdmin = roleName === "Super Admin";
   
   // For create mode, we watch a temp field and sync it with the description object
   const tempDescriptionValue = useWatch({ control, name: "temp_description", defaultValue: "" });
@@ -67,9 +70,10 @@ const BatchOverview: React.FC<BatchOverviewProps> = ({
         <Grid size={{ xs: 12 }}>
           <RTEField
             control={control}
-            label="Description"
+            label="Instruction"
+            placeholder="Write Instruction"
             name={isEdit ? "description" : "temp_description"}
-            rules={{ required: "Description is required" }}
+            disabled={!isSuperAdmin}
             sx={{ height: "12rem" }}
           />
         </Grid>
