@@ -57,7 +57,7 @@ export const VendorAssessment: React.FC = () => {
       setData(res.data?.data || []);
     } catch (err: any) {
       console.error("Error fetching vendor assessments:", err);
-      snack.error(err?.response?.data?.message || "Gagal memuat data vendor assessment");
+      snack.error(err?.response?.data?.message || "Failed to load vendor assessment data");
     } finally {
       setLoading(false);
     }
@@ -79,13 +79,13 @@ export const VendorAssessment: React.FC = () => {
     setDeleteLoading(true);
     try {
       await API.delete(`/vendor-assessment/${recordToDelete.id}`);
-      snack.success("Data asesmen vendor berhasil dihapus");
+      snack.success("Vendor assessment record deleted successfully");
       setOpenDelete(false);
       setRecordToDelete(null);
       fetchData();
     } catch (err: any) {
       console.error("Delete error:", err);
-      snack.error(err?.response?.data?.message || "Gagal menghapus data");
+      snack.error(err?.response?.data?.message || "Failed to delete record");
     } finally {
       setDeleteLoading(false);
     }
@@ -94,7 +94,7 @@ export const VendorAssessment: React.FC = () => {
   const columns = useMemo<MRT_ColumnDef<any>[]>(
     () => [
       {
-        header: "Nama Peserta",
+        header: "Participant Name",
         accessorKey: "participant_name",
         Cell: ({ row }) => (
           <Box>
@@ -126,7 +126,7 @@ export const VendorAssessment: React.FC = () => {
         ),
       },
       {
-        header: "Tgl Asesmen",
+        header: "Assessment Date",
         accessorKey: "assessment_date",
         Cell: ({ cell }) => {
           const val = cell.getValue<string>();
@@ -208,7 +208,7 @@ export const VendorAssessment: React.FC = () => {
 
           return (
             <Box sx={{ display: "flex", justifyContent: "center", gap: 0.5 }}>
-              <Tooltip title="Lihat Report PDF" arrow>
+              <Tooltip title="View PDF Report" arrow>
                 <IconButton
                   size="small"
                   color="primary"
@@ -218,7 +218,7 @@ export const VendorAssessment: React.FC = () => {
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Unduh Report PDF" arrow>
+              <Tooltip title="Download PDF Report" arrow>
                 <IconButton
                   size="small"
                   color="secondary"
@@ -230,7 +230,7 @@ export const VendorAssessment: React.FC = () => {
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Detail Asesmen" arrow>
+              <Tooltip title="Assessment Details" arrow>
                 <IconButton
                   size="small"
                   color="info"
@@ -243,7 +243,7 @@ export const VendorAssessment: React.FC = () => {
                 </IconButton>
               </Tooltip>
 
-              <Tooltip title="Hapus Data" arrow>
+              <Tooltip title="Delete Record" arrow>
                 <IconButton
                   size="small"
                   color="error"
@@ -295,7 +295,7 @@ export const VendorAssessment: React.FC = () => {
             Vendor Assessment
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Kelola dan tinjau data hasil asesmen peserta dari vendor eksternal (Critical Thinking, Work & Endurance, Growth Mindset)
+            Manage and review external vendor assessment results (Critical Thinking, Work & Endurance, Growth Mindset)
           </Typography>
         </Box>
 
@@ -315,7 +315,7 @@ export const VendorAssessment: React.FC = () => {
             onClick={() => setOpenUpload(true)}
             sx={{ fontWeight: "600" }}
           >
-            + Upload Report Vendor
+            + Upload Vendor Report
           </Button>
         </Box>
       </Box>
@@ -352,16 +352,16 @@ export const VendorAssessment: React.FC = () => {
 
       {/* Delete Confirmation Dialog */}
       <Dialog open={openDelete} onClose={() => setOpenDelete(false)}>
-        <DialogTitle>Konfirmasi Hapus</DialogTitle>
+        <DialogTitle>Confirm Delete</DialogTitle>
         <DialogContent>
           <Typography>
-            Apakah Anda yakin ingin menghapus data hasil asesmen vendor untuk peserta{" "}
-            <strong>{recordToDelete?.participant_name}</strong>? File report terkait juga akan dihapus.
+            Are you sure you want to delete the vendor assessment record for participant{" "}
+            <strong>{recordToDelete?.participant_name}</strong>? The associated report file will also be permanently removed.
           </Typography>
         </DialogContent>
         <DialogActions sx={{ px: 3, pb: 2 }}>
           <Button onClick={() => setOpenDelete(false)} disabled={deleteLoading}>
-            Batal
+            Cancel
           </Button>
           <Button
             onClick={handleDeleteConfirm}
@@ -369,7 +369,7 @@ export const VendorAssessment: React.FC = () => {
             variant="contained"
             disabled={deleteLoading}
           >
-            {deleteLoading ? "Menghapus..." : "Hapus"}
+            {deleteLoading ? "Deleting..." : "Delete"}
           </Button>
         </DialogActions>
       </Dialog>

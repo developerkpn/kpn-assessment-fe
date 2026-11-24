@@ -86,13 +86,13 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
     setNotes("");
     setHasCriticalThinking(true);
     setCtScore("");
-    setCtCategory("Tinggi");
+    setCtCategory("High");
     setHasWorkEndurance(true);
     setWeScore("");
     setWeCategory("Good");
     setHasGrowthMindset(true);
     setGmScore("");
-    setGmCategory("Sangat Tinggi");
+    setGmCategory("Very High");
     setSelectedFile(null);
   };
 
@@ -100,19 +100,19 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
     e.preventDefault();
 
     if (!participantName.trim()) {
-      snack.warning("Nama peserta wajib diisi");
+      snack.warning("Participant name is required");
       return;
     }
     if (!participantEmail.trim()) {
-      snack.warning("Email peserta wajib diisi");
+      snack.warning("Participant email is required");
       return;
     }
     if (!vendorName.trim()) {
-      snack.warning("Nama vendor wajib diisi");
+      snack.warning("Vendor name is required");
       return;
     }
     if (!selectedFile) {
-      snack.warning("Silakan pilih file PDF report hasil asesmen");
+      snack.warning("Please select a vendor assessment PDF report file");
       return;
     }
 
@@ -151,14 +151,14 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
       });
 
       if (res.status === 201 || res.status === 200) {
-        snack.success("Report hasil asesmen vendor berhasil diunggah!");
+        snack.success("Vendor assessment report uploaded successfully!");
         resetForm();
         onSuccess();
         onClose();
       }
     } catch (err: any) {
       console.error("Upload error:", err);
-      snack.error(err?.response?.data?.message || err?.message || "Gagal mengunggah file");
+      snack.error(err?.response?.data?.message || err?.message || "Failed to upload file");
     } finally {
       setLoading(false);
     }
@@ -178,10 +178,10 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
         >
           <Box>
             <Typography variant="h6" fontWeight="bold">
-              Upload Report Hasil Asesmen Vendor
+              Upload Vendor Assessment Report
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Unggah file PDF hasil asesmen eksternal beserta keikutsertaan modul tes
+              Upload external vendor assessment PDF along with completed test modules
             </Typography>
           </Box>
           <IconButton onClick={onClose} disabled={loading} size="small">
@@ -192,13 +192,13 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
         <DialogContent sx={{ py: 3 }}>
           {/* 1. Participant & Vendor Details */}
           <Typography variant="subtitle2" color="primary" fontWeight="bold" sx={{ mb: 1.5 }}>
-            1. INFORMASI PESERTA & VENDOR
+            1. PARTICIPANT & VENDOR INFORMATION
           </Typography>
           <Grid container spacing={2} sx={{ mb: 3 }}>
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                label="Nama Peserta"
-                placeholder="Contoh: Peserta 1"
+                label="Participant Name"
+                placeholder="e.g. Participant 1"
                 fullWidth
                 size="small"
                 required
@@ -208,8 +208,8 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
             </Grid>
             <Grid size={{ xs: 12, sm: 6 }}>
               <TextField
-                label="Email Peserta"
-                placeholder="peserta@kpn-corp.com"
+                label="Participant Email"
+                placeholder="participant@kpn-corp.com"
                 type="email"
                 fullWidth
                 size="small"
@@ -220,8 +220,8 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
-                label="NIK Peserta (Opsional)"
-                placeholder="Contoh: NIK-2026-001"
+                label="Participant ID / NIK (Optional)"
+                placeholder="e.g. ID-2026-001"
                 fullWidth
                 size="small"
                 value={participantNik}
@@ -230,8 +230,8 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
-                label="Nama Vendor"
-                placeholder="Faxtor / SHL / dsb."
+                label="Vendor Name"
+                placeholder="Faxtor / SHL / etc."
                 fullWidth
                 size="small"
                 required
@@ -241,7 +241,7 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
             </Grid>
             <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
-                label="Tanggal Asesmen"
+                label="Assessment Date"
                 type="date"
                 fullWidth
                 size="small"
@@ -257,10 +257,10 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
 
           {/* 2. Test Checkboxes (CR 8 Acceptance Criteria 2) */}
           <Typography variant="subtitle2" color="primary" fontWeight="bold" sx={{ mb: 1 }}>
-            2. KEIKUTSERTAAN MODUL TES (CENTANG MODUL YANG DIAMBIL)
+            2. TEST MODULE PARTICIPATION (CHECK APPLICABLE TESTS)
           </Typography>
           <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 2 }}>
-            Centang tes apa saja yang sudah diambil oleh peserta berdasarkan report yang di-upload
+            Select the tests completed by the participant according to the uploaded report
           </Typography>
 
           <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -284,16 +284,16 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
                 {hasCriticalThinking && (
                   <Box sx={{ display: "flex", gap: 2, mt: 1, pl: 4 }}>
                     <TextField
-                      label="Skor / Raw Score"
-                      placeholder="Contoh: 22"
+                      label="Score / Raw Score"
+                      placeholder="e.g. 22"
                       size="small"
                       value={ctScore}
                       onChange={(e) => setCtScore(e.target.value)}
                       sx={{ width: 180 }}
                     />
                     <TextField
-                      label="Kategori"
-                      placeholder="Tinggi / Sedang / Rendah"
+                      label="Category"
+                      placeholder="High / Average / Low"
                       size="small"
                       value={ctCategory}
                       onChange={(e) => setCtCategory(e.target.value)}
@@ -324,15 +324,15 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
                 {hasWorkEndurance && (
                   <Box sx={{ display: "flex", gap: 2, mt: 1, pl: 4 }}>
                     <TextField
-                      label="Skor / Jumlah Kerja"
-                      placeholder="Contoh: 779"
+                      label="Score / Work Output"
+                      placeholder="e.g. 779"
                       size="small"
                       value={weScore}
                       onChange={(e) => setWeScore(e.target.value)}
                       sx={{ width: 180 }}
                     />
                     <TextField
-                      label="Kategori / Sikap Kerja"
+                      label="Category / Work Attitude"
                       placeholder="Good / Fair / Poor"
                       size="small"
                       value={weCategory}
@@ -364,16 +364,16 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
                 {hasGrowthMindset && (
                   <Box sx={{ display: "flex", gap: 2, mt: 1, pl: 4 }}>
                     <TextField
-                      label="Skor"
-                      placeholder="Contoh: 18"
+                      label="Score"
+                      placeholder="e.g. 18"
                       size="small"
                       value={gmScore}
                       onChange={(e) => setGmScore(e.target.value)}
                       sx={{ width: 180 }}
                     />
                     <TextField
-                      label="Kategori"
-                      placeholder="Sangat Tinggi / Tinggi / dsb."
+                      label="Category"
+                      placeholder="Very High / High / etc."
                       size="small"
                       value={gmCategory}
                       onChange={(e) => setGmCategory(e.target.value)}
@@ -389,7 +389,7 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
 
           {/* 3. File Upload Area */}
           <Typography variant="subtitle2" color="primary" fontWeight="bold" sx={{ mb: 1.5 }}>
-            3. UNGGAH FILE REPORT ASESMEN VENDOR (PDF)
+            3. UPLOAD VENDOR ASSESSMENT REPORT FILE (PDF)
           </Typography>
 
           {!selectedFile ? (
@@ -414,10 +414,10 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
               />
               <CloudUploadIcon sx={{ fontSize: 44, color: "primary.main", mb: 1 }} />
               <Typography variant="body1" fontWeight="bold">
-                Pilih atau Tarik File Report PDF
+                Click or Drag & Drop Vendor Report PDF
               </Typography>
               <Typography variant="caption" color="text.secondary">
-                Mendukung format .PDF (Maksimal 50 MB)
+                Supports .PDF format (Max 50 MB)
               </Typography>
             </Box>
           ) : (
@@ -439,7 +439,7 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
 
           {/* Optional notes */}
           <TextField
-            label="Catatan Tambahan (Opsional)"
+            label="Additional Notes (Optional)"
             multiline
             rows={2}
             fullWidth
@@ -452,7 +452,7 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
 
         <DialogActions sx={{ px: 3, py: 2, borderTop: "1px solid #e0e0e0" }}>
           <Button onClick={onClose} disabled={loading} variant="outlined">
-            Batal
+            Cancel
           </Button>
           <Button
             type="submit"
@@ -460,7 +460,7 @@ export const UploadVendorModal: React.FC<UploadVendorModalProps> = ({
             disabled={loading}
             startIcon={loading ? <CircularProgress size={18} color="inherit" /> : <CloudUploadIcon />}
           >
-            {loading ? "Mengunggah..." : "Simpan & Upload Report"}
+            {loading ? "Uploading..." : "Upload Report"}
           </Button>
         </DialogActions>
       </form>

@@ -71,7 +71,7 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
       >
         <Box>
           <Typography variant="h6" fontWeight="bold">
-            Detail Hasil Asesmen Vendor
+            Vendor Assessment Result Details
           </Typography>
           <Typography variant="body2" color="text.secondary">
             {data.participant_name} ({data.vendor_name})
@@ -85,32 +85,32 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
       <DialogContent sx={{ py: 3 }}>
         {/* Section 1: Participant & Vendor Info */}
         <Typography variant="subtitle2" color="primary" fontWeight="bold" sx={{ mb: 1.5 }}>
-          INFORMASI PESERTA & VENDOR
+          PARTICIPANT & VENDOR INFORMATION
         </Typography>
         <Grid container spacing={2} sx={{ mb: 3 }}>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography variant="caption" color="text.secondary">Nama Peserta</Typography>
+            <Typography variant="caption" color="text.secondary">Participant Name</Typography>
             <Typography variant="body1" fontWeight="600">{data.participant_name}</Typography>
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography variant="caption" color="text.secondary">Email Peserta</Typography>
+            <Typography variant="caption" color="text.secondary">Participant Email</Typography>
             <Typography variant="body1">{data.participant_email}</Typography>
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography variant="caption" color="text.secondary">NIK</Typography>
+            <Typography variant="caption" color="text.secondary">NIK / ID</Typography>
             <Typography variant="body1">{data.participant_nik || "-"}</Typography>
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography variant="caption" color="text.secondary">Vendor Asesmen</Typography>
+            <Typography variant="caption" color="text.secondary">Assessment Vendor</Typography>
             <Typography variant="body1" fontWeight="600">{data.vendor_name}</Typography>
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
-            <Typography variant="caption" color="text.secondary">Tanggal Asesmen</Typography>
+            <Typography variant="caption" color="text.secondary">Assessment Date</Typography>
             <Typography variant="body1">{formatDate(data.assessment_date)}</Typography>
           </Grid>
           {data.notes && (
             <Grid size={{ xs: 12 }}>
-              <Typography variant="caption" color="text.secondary">Catatan</Typography>
+              <Typography variant="caption" color="text.secondary">Notes</Typography>
               <Typography variant="body2">{data.notes}</Typography>
             </Grid>
           )}
@@ -118,9 +118,9 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
 
         <Divider sx={{ my: 2 }} />
 
-        {/* Section 2: Keikutsertaan Tes & Hasil */}
+        {/* Section 2: Test Modules & Results */}
         <Typography variant="subtitle2" color="primary" fontWeight="bold" sx={{ mb: 1.5 }}>
-          KEIKUTSERTAAN & HASIL MODUL TES
+          TEST MODULE PARTICIPATION & RESULTS
         </Typography>
         <Grid container spacing={2} sx={{ mb: 3 }}>
           {/* Critical Thinking */}
@@ -143,15 +143,15 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
                 <Chip
                   size="small"
                   icon={data.has_critical_thinking ? <CheckCircleIcon /> : <CancelIcon />}
-                  label={data.has_critical_thinking ? "Sudah Diambil" : "Tidak Diambil"}
+                  label={data.has_critical_thinking ? "Completed" : "Not Completed"}
                   color={data.has_critical_thinking ? "success" : "default"}
                   variant={data.has_critical_thinking ? "filled" : "outlined"}
                   sx={{ mb: 1.5 }}
                 />
                 {data.has_critical_thinking && (
                   <Box sx={{ mt: 1, fontSize: "13px" }}>
-                    <div><strong>Skor:</strong> {data.critical_thinking_score || "-"}</div>
-                    <div><strong>Kategori:</strong> {data.critical_thinking_category || "-"}</div>
+                    <div><strong>Score:</strong> {data.critical_thinking_score || "-"}</div>
+                    <div><strong>Category:</strong> {data.critical_thinking_category || "-"}</div>
                   </Box>
                 )}
               </CardContent>
@@ -178,15 +178,15 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
                 <Chip
                   size="small"
                   icon={data.has_work_endurance ? <CheckCircleIcon /> : <CancelIcon />}
-                  label={data.has_work_endurance ? "Sudah Diambil" : "Tidak Diambil"}
+                  label={data.has_work_endurance ? "Completed" : "Not Completed"}
                   color={data.has_work_endurance ? "success" : "default"}
                   variant={data.has_work_endurance ? "filled" : "outlined"}
                   sx={{ mb: 1.5 }}
                 />
                 {data.has_work_endurance && (
                   <Box sx={{ mt: 1, fontSize: "13px" }}>
-                    <div><strong>Skor:</strong> {data.work_endurance_score || "-"}</div>
-                    <div><strong>Kategori:</strong> {data.work_endurance_category || "-"}</div>
+                    <div><strong>Score:</strong> {data.work_endurance_score || "-"}</div>
+                    <div><strong>Category:</strong> {data.work_endurance_category || "-"}</div>
                   </Box>
                 )}
               </CardContent>
@@ -213,15 +213,15 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
                 <Chip
                   size="small"
                   icon={data.has_growth_mindset ? <CheckCircleIcon /> : <CancelIcon />}
-                  label={data.has_growth_mindset ? "Sudah Diambil" : "Tidak Diambil"}
+                  label={data.has_growth_mindset ? "Completed" : "Not Completed"}
                   color={data.has_growth_mindset ? "success" : "default"}
                   variant={data.has_growth_mindset ? "filled" : "outlined"}
                   sx={{ mb: 1.5 }}
                 />
                 {data.has_growth_mindset && (
                   <Box sx={{ mt: 1, fontSize: "13px" }}>
-                    <div><strong>Skor:</strong> {data.growth_mindset_score || "-"}</div>
-                    <div><strong>Kategori:</strong> {data.growth_mindset_category || "-"}</div>
+                    <div><strong>Score:</strong> {data.growth_mindset_score || "-"}</div>
+                    <div><strong>Category:</strong> {data.growth_mindset_category || "-"}</div>
                   </Box>
                 )}
               </CardContent>
@@ -233,7 +233,7 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
 
         {/* Section 3: Document File Metadata */}
         <Typography variant="subtitle2" color="primary" fontWeight="bold" sx={{ mb: 1.5 }}>
-          DOKUMEN REPORT VENDOR
+          VENDOR REPORT DOCUMENT
         </Typography>
         <Card variant="outlined" sx={{ backgroundColor: "#fbfbfb" }}>
           <CardContent sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
@@ -254,7 +254,7 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
                 startIcon={<VisibilityIcon />}
                 onClick={() => onPreviewPdf(fileUrl, downloadUrl, data.file_original_name)}
               >
-                Lihat Report
+                View Report
               </Button>
               <Button
                 component="a"
@@ -264,7 +264,7 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
                 size="small"
                 startIcon={<DownloadIcon />}
               >
-                Unduh Report
+                Download Report
               </Button>
             </Box>
           </CardContent>
@@ -273,7 +273,7 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
 
       <DialogActions sx={{ px: 3, py: 2, borderTop: "1px solid #e0e0e0" }}>
         <Button onClick={onClose} variant="contained">
-          Tutup
+          Close
         </Button>
       </DialogActions>
     </Dialog>
