@@ -57,6 +57,12 @@ const Batch = () => {
         muiTableBodyCellProps: { align: "center" },
       },
       {
+        header: "Assessees",
+        id: "assessee_names",
+        accessorFn: row => row.assessee_names ?? "",
+        enableHiding: true,
+      },
+      {
         header: "Type",
         accessorKey: "type",
         muiTableHeadCellProps: { align: "center" },
@@ -175,7 +181,7 @@ const Batch = () => {
     enableFilters: true,
     enableGlobalFilter: true,
     enableColumnFilters: false,
-    globalFilterFn: "fuzzy",
+    globalFilterFn: "includesString",
     enableStickyHeader: true,
     enableFilterMatchHighlighting: true,
     muiTableContainerProps: {
@@ -229,6 +235,9 @@ const Batch = () => {
     initialState: {
       showGlobalFilter: true,
       density: "comfortable",
+      columnVisibility: {
+        assessee_names: false,
+      },
       sorting: [
         {
           id: "period",
