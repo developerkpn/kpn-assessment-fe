@@ -22,6 +22,7 @@ import {
 import { MaterialReactTable, type MRT_ColumnDef, useMaterialReactTable } from "material-react-table";
 import { format } from "date-fns";
 import useAPI from "@/hooks/useAPI";
+import useAuthStore from "@/hooks/useAuthStore";
 import { snack } from "@/providers/SnackbarProvider";
 import UploadVendorModal from "@/components/vendor-assessment/UploadVendorModal";
 import DetailVendorModal from "@/components/vendor-assessment/DetailVendorModal";
@@ -29,6 +30,7 @@ import PdfViewerModal from "@/components/vendor-assessment/PdfViewerModal";
 
 export const VendorAssessment: React.FC = () => {
   const API = useAPI();
+  const accessToken = useAuthStore(state => state.access_token);
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -199,8 +201,10 @@ export const VendorAssessment: React.FC = () => {
         muiTableBodyCellProps: { align: "center" },
         Cell: ({ row }) => {
           const item = row.original;
-          const fileUrl = `/api/vendor-assessment/${item.id}/file`;
-          const downloadUrl = `/api/vendor-assessment/${item.id}/download`;
+          const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+          const tokenQuery = accessToken ? `?token=${encodeURIComponent(accessToken)}` : "";
+          const fileUrl = `${apiBase}/vendor-assessment/${item.id}/file${tokenQuery}`;
+          const downloadUrl = `${apiBase}/vendor-assessment/${item.id}/download${tokenQuery}`;
 
           return (
             <Box sx={{ display: "flex", justifyContent: "center", gap: 0.5 }}>

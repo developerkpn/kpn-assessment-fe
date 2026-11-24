@@ -26,6 +26,7 @@ import {
   Description as DescriptionIcon,
 } from "@mui/icons-material";
 import { format } from "date-fns";
+import useAuthStore from "@/hooks/useAuthStore";
 
 interface DetailVendorModalProps {
   open: boolean;
@@ -51,8 +52,11 @@ export const DetailVendorModal: React.FC<DetailVendorModalProps> = ({
     }
   };
 
-  const fileUrl = `/api/vendor-assessment/${data.id}/file`;
-  const downloadUrl = `/api/vendor-assessment/${data.id}/download`;
+  const accessToken = useAuthStore(state => state.access_token);
+  const tokenQuery = accessToken ? `?token=${encodeURIComponent(accessToken)}` : "";
+  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const fileUrl = `${apiBase}/vendor-assessment/${data.id}/file${tokenQuery}`;
+  const downloadUrl = `${apiBase}/vendor-assessment/${data.id}/download${tokenQuery}`;
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
