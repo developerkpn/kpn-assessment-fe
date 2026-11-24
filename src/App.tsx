@@ -76,6 +76,7 @@ const TestDetail = lazy(() => import("@/pages/master-data/test/TestDetail.tsx"))
 const MockQnaClient = lazy(() => import("@/pages/client/QuestionAnswerDummy"));
 const PreviewMockReport = lazy(() => import("@/components/report/Preview"));
 const FetchDataBatchClient = lazy(() => import("@/pages/client/FetchDataBatchClient"));
+const VendorAssessment = lazy(() => import("@/pages/report/VendorAssessment"));
 
 const refineResources = [
   {
@@ -390,6 +391,10 @@ const router = createBrowserRouter([
       {
         path: "element-trans",
         element: <ElementTranslationMasterPage />,
+      },
+      {
+        path: "vendor-assessment",
+        element: <VendorAssessment />,
       },
     ],
   },
