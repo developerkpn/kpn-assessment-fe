@@ -13,6 +13,8 @@ const importLazy = (icon: string) => {
       return lazy(() => import("@mui/icons-material/FormatListBulleted"));
     case "Assignment":
       return lazy(() => import("@mui/icons-material/Assignment"));
+    case "FactCheck":
+      return lazy(() => import("@mui/icons-material/FactCheck"));
     case "Checklist":
       return lazy(() => import("@mui/icons-material/Checklist"));
     case "Quiz":
