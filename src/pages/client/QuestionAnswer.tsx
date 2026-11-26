@@ -222,14 +222,20 @@ const QuestionAnswer: React.FC = () => {
         },
       };
 
-      currentQuestion.choosen_answer = { ...selectedAnswers };
-      API.post(`/assessment/${token}/subtest/submission`, answerPayload);
+      // Tunggu sampai jawaban benar-benar tersimpan. Kalau gagal (koneksi putus, waktu habis),
+      // kandidat tetap di soal ini dan diberi tahu, bukan pindah soal dengan jawaban yang hilang.
+      await API.post(`/assessment/${token}/subtest/submission`, answerPayload);
 
-      // Update local state di question data agar tetap sinkron
+      // Update local state di question data agar tetap sinkron (hanya setelah tersimpan)
+      currentQuestion.choosen_answer = { ...selectedAnswers };
 
       return true;
     } catch (error) {
       console.error(error);
+      snack.error(
+        (isAxiosError(error) && error.response?.data?.message) ||
+          t("Failed to save your answer. Please check your connection and try again.")
+      );
       return false;
     } finally {
       setIsSubmitting(false);
@@ -327,6 +333,9 @@ const QuestionAnswer: React.FC = () => {
     ? async () => {
         try {
           setLoading(true);
+          // Simpan dulu jawaban yang sedang tampil di layar (belum tersimpan karena kandidat
+          // belum klik Next). Kalau gagal tetap lanjut submit, waktu sudah habis.
+          await saveAnswer();
           const { data } = await API.put(`/assessment/subtest/submission`, {
             det_id: assessmentData?.det_id,
           });
